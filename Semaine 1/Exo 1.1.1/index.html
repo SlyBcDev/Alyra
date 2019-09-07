@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Alyra: Exercice 1.1.1</title>
+  </head>
+  <body>
+    <h1>Trouver un nombre aléatoire</h1>
+    <p>
+      Construire un jeu qui tire aléatoirement un nombre entre 1 et 100 et
+      demande à l'utilisateur de le deviner. Pour chaque entrée de l'utilisateur
+      le programme affiche si la bonne réponse est supérieure ou inférieure. Il
+      affiche aussi si la réponse est très proche (<=5), proche ( 6 à 10) ou
+      supérieur.
+    </p>
+    <button id="boutton" class="btn btn-primary center">Cliquez ici</button>
+    <script type="text/javascript">
+      let numAleatoire = Math.round(Math.random() * 100) + 1;
+
+      console.log(numAleatoire); // Triche possible en regardant la console.
+      let reponse;
+      const lancerExo = () => {
+        while (reponse != numAleatoire) {
+          reponse = parseInt(prompt("Devinez un nombre entre 1 et 100"));
+          if (reponse > 100 || reponse <= 0) {
+            alert(`Nous voulons un chiffre entre 1 et 100 !!!`);
+          } else if (reponse === numAleatoire) {
+            alert(`Bravo ${reponse} est la bonne réponse!`);
+          } else if (
+            reponse - numAleatoire >= 1 &&
+            reponse - numAleatoire <= 5
+          ) {
+            alert(`Trop grand mais vous êtes très très proche !!!`);
+          } else if (
+            numAleatoire - reponse >= 1 &&
+            numAleatoire - reponse <= 5
+          ) {
+            alert(`Trop petit mais vous êtes très très proche !!!`);
+          } else if (reponse - numAleatoire > 10) {
+            alert(`Trop grand !!!`);
+          } else if (numAleatoire - reponse > 10) {
+            alert(`Trop petit !`);
+          } else if (
+            reponse - numAleatoire > 5 &&
+            reponse - numAleatoire <= 10
+          ) {
+            alert(`Trop grand mais ça chauffe !!!`);
+          } else if (
+            numAleatoire - reponse > 5 &&
+            numAleatoire - reponse <= 10
+          ) {
+            alert(`Trop petit mais ça chauffe !!!`);
+          }
+        }
+      };
+
+      const bouttonAction = document.getElementById("boutton");
+      bouttonAction.onclick = lancerExo;
+    </script>
+  </body>
+</html>
