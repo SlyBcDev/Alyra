@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Alyra: Exercice 1.1.2</title>
+  </head>
+  <body>
+    <h1 class="text-center">
+      Choississez un nombre entre 1 et 100 dans votre tête, le programme le
+      trouvera.
+    </h1>
+    <p>
+      <b>Ennoncé:</b>
+      Écrire un programme qui étant donné un nombre saisi par l'utilisateur
+      entre 1 et 100 recherche ce nombre de façon efficace.
+    </p>
+    <div class="block mx-auto text-center bg-dark p-2 m-2">
+      <h2>Votre nombre est il 50 ?</h2>
+      <div class="btn-group center-block">
+        <button id="bouttonMoins" class="btn btn-danger btn-lg col-12 ">
+          Plus petit
+        </button>
+        <button id="bouttonPlus" class="btn btn-primary btn-lg col-12">
+          Plus grand
+        </button>
+        <button
+          id="bravo"
+          class="btn btn-secondary btn-block btn-lg btn-center p-2"
+        >
+          Oui Bravo !!!
+        </button>
+      </div>
+    </div>
+    <script type="text/javascript">
+      let reponse1 = 50;
+      let reponseTemp;
+      let valeurMax = 100;
+      let valeurMin = 1;
+      let compteur = 0;
+
+      const test = () => {
+        console.log(
+          "nouvelle proposition: " +
+            reponse1 +
+            " // Maximum est " +
+            valeurMax +
+            " // Minimum est " +
+            valeurMin
+        );
+      };
+
+      const moins = () => {
+        reponseTemp = reponse1;
+        reponse1 = Math.round(reponse1 - (reponse1 - valeurMin) / 2);
+        valeurMax = reponseTemp;
+
+        document.querySelector(
+          "h2"
+        ).textContent = `Votre nombre est il ${reponse1} ?`;
+        compteur++;
+        test();
+      };
+
+      const plus = () => {
+        reponseTemp = reponse1;
+        reponse1 = Math.round(reponse1 + (valeurMax - reponse1) / 2);
+        valeurMin = reponseTemp;
+        document.querySelector(
+          "h2"
+        ).textContent = `Votre nombre est il ${reponse1} ?`;
+        compteur++;
+        test();
+      };
+
+      const bravo = () => {
+        alert(
+          `Le programme a donné ${compteur} réponses avant de trouver le résultat.`
+        );
+      };
+
+      const bouttonMoins = (document.getElementById(
+        "bouttonMoins"
+      ).onclick = moins);
+
+      const bouttonActionPlus = (document.getElementById(
+        "bouttonPlus"
+      ).onclick = plus);
+
+      const bouttonBravo = (document.getElementById("bravo").onclick = bravo);
+    </script>
+  </body>
+</html>
