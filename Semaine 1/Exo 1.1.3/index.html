@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Palindrome ?</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      let mot = "ici";
+      let reg = / /gi;
+      let motJoin = mot.replace(reg, "");
+
+      let motTableau = motJoin.split("");
+      console.log(motTableau);
+      let motInverse = [];
+
+      for (i = motTableau.length - 1; i > -1; i--) {
+        motInverse.push(motTableau[i]);
+      }
+
+      if (motTableau.toString() == motInverse.toString()) {
+        console.log(`${mot} est un Palindrome`);
+      } else {
+        console.log(`${mot} n'est pas un palindrome.`);
+      }
+    </script>
+  </body>
+</html>
