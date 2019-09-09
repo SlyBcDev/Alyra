@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Palindrome ?</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      class Cercle {
+        constructor(rayon) {
+          this.rayon = rayon;
+          this.aire = () => {
+            return Math.PI * rayon ** 2;
+          };
+          this.perimetre = () => {
+            return 2 * Math.PI * rayon;
+          };
+        }
+      }
+      let c = new Cercle(5);
+      console.log({ aire: c.aire(), perimetre: c.perimetre() });
+    </script>
+  </body>
+</html>
