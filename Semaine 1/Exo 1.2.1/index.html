@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Exercice 1.2.1: Calculer la factorielle d'un nombre</h1>
+    <p>
+      On souhaite calculer factoriel d'un nombre a. Factoriel s'exprime comme le
+      produit des entiers jusqu'à a inclus : a! = 1 x 2 x 3 ... x a Définir un
+      programme pour calculer la factorielle d'un nombre a . Quel est le nombre
+      d'opérations à effectuer?
+    </p>
+    <button id="btn" class="btn btn-primary btn-lg p-2 m-2">
+      Lancer l'exercice
+    </button>
+    <script type="text/javascript">
+      const clic = () => {
+        const nombreATraiter = parseInt(prompt("Saisissez un nombre"));
+        let valeurIntermediaire = 1;
+        let resultat = 1;
+        for (let i = 1; i <= nombreATraiter; i++) {
+          resultat = valeurIntermediaire * i;
+          valeurIntermediaire = resultat;
+        }
+        alert(`Le factoriel de ${nombreATraiter} est ${resultat}`);
+      };
+
+      const boutton = (document.getElementById("btn").onclick = clic);
+    </script>
+  </body>
+</html>
