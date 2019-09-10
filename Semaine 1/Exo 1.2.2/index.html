@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Exo 1.2.2 Alyra</title>
+  </head>
+  <body>
+    <h1>Exercice 1.2.2 : Obtenir les meilleurs pourboires</h1>
+    <p>
+      On définit un ensemble de transactions avec leur taille (en octets) et
+      leur pourboire (en satoshis) associés
+    </p>
+    <table class="table table-dark">
+      <tbody>
+        <tr>
+          <th scope="row">ID du bloc</th>
+          <td>0</td>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+          <td>7</td>
+        </tr>
+        <tr>
+          <th scope="row">Taille bloc en Octets</th>
+          <td>2000</td>
+          <td>6000</td>
+          <td>800</td>
+          <td>700</td>
+          <td>1200</td>
+          <td>1000</td>
+          <td>1300</td>
+          <td>600</td>
+        </tr>
+        <tr>
+          <th scope="row">Pourboires</th>
+          <td>13000</td>
+          <td>9000</td>
+          <td>2000</td>
+          <td>1500</td>
+          <td>3500</td>
+          <td>2800</td>
+          <td>5000</td>
+          <td>1500</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Étant donné un bloc donc la taille maximale est 6 000 octets, quelles sont
+      les transactions qui devraient être incluses pour récupérer le meilleur
+      pourboire ? Définir un algorithme pour résoudre ce problème quel que soit
+      le nombre de transactions. On pourra essayer une approche exhaustive qui
+      essaye toutes les combinaisons de transactions et une approche plus
+      tactique. Quelle est sa complexité ?
+    </p>
+    <button id="btn" class="btn btn-primary btn-lg p-2 m-2">
+      Lancer l'exercice
+    </button>
+    <script type="text/javascript">
+      const blocs = [
+        { id: 0, bloc: 2000, pourboire: 13000 },
+        { id: 1, bloc: 6000, pourboire: 9000 },
+        { id: 2, bloc: 800, pourboire: 2000 },
+        { id: 3, bloc: 700, pourboire: 1500 },
+        { id: 4, bloc: 1200, pourboire: 3500 },
+        { id: 5, bloc: 1000, pourboire: 2800 },
+        { id: 6, bloc: 1300, pourboire: 5000 },
+        { id: 7, bloc: 600, pourboire: 1500 }
+      ];
+
+      let tableauDeSolution = [];
+      let tailleTemporaire = 0;
+      let pourboireTemporaire = 0;
+      const clic = () => {
+        let i = 0;
+        while (i < blocs.length) {
+          if (tailleTemporaire + blocs[i].bloc <= 6000) {
+            tailleTemporaire = tailleTemporaire + blocs[i].bloc;
+            pourboireTemporaire = pourboireTemporaire + blocs[i].pourboire;
+            tableauDeSolution.push(blocs[i].id);
+            i++;
+          } else {
+            i++;
+          }
+        }
+        alert(`Prenons les blocs: ${tableauDeSolution}  `);
+      };
+
+      const boutton = (document.getElementById("btn").onclick = clic);
+    </script>
+  </body>
+</html>
