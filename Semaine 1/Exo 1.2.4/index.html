@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/journal/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ciphE0NCAlD2/N6NUApXAN2dAs/vcSAOTzyE202jJx3oS8n4tAQezRgnlHqcJ59C"
+      crossorigin="anonymous"
+    />
+    <title>Alyra Exo 1.2.4</title>
+  </head>
+  <body>
+    <h1>Trouver le bon trade</h1>
+    <p>
+      On étudie des offres d’achat/vente dans une plateforme d'échange de
+      cryptocurrencies. On y trouve les ordres (en attente) suivants:<br />
+      Id0 = 84 Doge -> 32 LTC (1 Doge = 0.381 LTC)<br />
+      Id1 = 29 Doge -> 80 ETH (1 Doge = 2.75 ETH) <br />
+      Id2 = 300 ETH -> 62 BTC (1 ETH = 0.206 BTC) <br />
+      Id3 = 288 LTC -> 2304 ETH (1 LTC = 8 ETH) <br />
+      Id4 = 27 BTC -> 46 Doge (1 BTC = 1.7 Doge) <br />
+      Id5 = 33 BTC -> 16 LTC (1 BTC = 0.48 LTC) <br />
+      Il est parfois possible, dans un marché non régulé, d’échanger un montant
+      d’une crypto A contre une crypto B, puis d’échanger ce résultat contre une
+      Crypto C, et de continuer jusqu’a revenir à la crypto A. Parfois, quand on
+      à de la chance, ou un bon algorithme, on gagne de l’argent. Recherchez une
+      méthode à partir des taux ci-dessus pour détecter les gains potentiels.
+    </p>
+    <script type="text/javascript">
+      const tradeDispo = [
+        { id: 0, Doge: 84, LTC: 32, ETH: 0, BTC: 0 },
+        { id: 1, Doge: 29, LTC: 0, ETH: 80, BTC: 0 },
+        { id: 2, Doge: 0, LTC: 0, ETH: 300, BTC: 62 },
+        { id: 3, Doge: 0, LTC: 288, ETH: 2304, BTC: 0 },
+        { id: 4, Doge: 46, LTC: 0, ETH: 0, BTC: 27 },
+        { id: 5, Doge: 0, LTC: 16, ETH: 0, BTC: 33 }
+      ];
+
+      let ratioDL = 0;
+      let ratioDE = 0;
+      let ratioDB = 0;
+      let ratioEB = 0;
+      let ratioLE = 0;
+      let ratioLB = 0;
+      let tableauIdRatio = [];
+      class idRatio {
+        constructor(id, ratio) {
+          this.id = id;
+          this.ratio = ratio;
+        }
+      }
+      for (i = 0; i < tradeDispo.length; i++) {
+        if (tradeDispo[i].Doge > 0 && tradeDispo[i].LTC > 0) {
+          ratioDL = tradeDispo[i].Doge / tradeDispo[i].LTC;
+          tableauIdRatio.push(new idRatio(tradeDispo[i].id, ratioDL));
+        }
+        if (tradeDispo[i].Doge > 0 && tradeDispo[i].ETH > 0) {
+          ratioDE = tradeDispo[i].Doge / tradeDispo[i].ETH;
+          tableauIdRatio.push(new idRatio(tradeDispo[i].id, ratioDE));
+        }
+        if (tradeDispo[i].Doge > 0 && tradeDispo[i].BTC > 0) {
+          ratioDB = tradeDispo[i].Doge / tradeDispo[i].BTC;
+          tableauIdRatio.push(new idRatio(tradeDispo[i].id, ratioDB));
+        }
+        if (tradeDispo[i].ETH > 0 && tradeDispo[i].BTC > 0) {
+          ratioEB = tradeDispo[i].ETH / tradeDispo[i].BTC;
+          tableauIdRatio.push(new idRatio(tradeDispo[i].id, ratioEB));
+        }
+        if (tradeDispo[i].LTC > 0 && tradeDispo[i].ETH > 0) {
+          ratioLE = tradeDispo[i].LTC / tradeDispo[i].ETH;
+          tableauIdRatio.push(new idRatio(tradeDispo[i].id, ratioLE));
+        }
+        if (tradeDispo[i].LTC > 0 && tradeDispo[i].BTC > 0) {
+          ratioLB = tradeDispo[i].LTC / tradeDispo[i].BTC;
+          tableauIdRatio.push(new idRatio(tradeDispo[i].id, ratioLB));
+        }
+      }
+      console.log(tableauIdRatio);
+      let tableauSecondNiveau = [];
+      for (j = 0; j < tableauIdRatio; j++) {
+        for (k = 0; k < tableauIdRatio; k++) {
+          if (
+            tableauIdRatio[j].ratio == ratioDL &&
+            tableauIdRatio[k].ratio == ratioLE
+          ) {
+            tableauSecondNiveau.push([
+              tableauIdRatio[j].ratio * tableauIdRatio[k].ratio
+            ]);
+          }
+          if (
+            tableauIdRatio[j].ratio == ratioDL &&
+            tableauIdRatio[k].ratio == ratioLB
+          ) {
+            tableauSecondNiveau.push([
+              tableauIdRatio[j].ratio * tableauIdRatio[k].ratio
+            ]);
+          }
+        }
+      }
+      console.log(tableauSecondNiveau);
+      /*console.log(
+              ratioDB +
+                " " +
+                ratioDE +
+                " " +
+                ratioDL +
+                " " +
+                ratioEB +
+                " " +
+                ratioLB +
+                " " +
+                ratioLE
+            );*/
+    </script>
+  </body>
+</html>
