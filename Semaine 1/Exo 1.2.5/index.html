@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/journal/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ciphE0NCAlD2/N6NUApXAN2dAs/vcSAOTzyE202jJx3oS8n4tAQezRgnlHqcJ59C"
+      crossorigin="anonymous"
+    />
+    <title>Exercice Alyra 1.2.5</title>
+  </head>
+  <body>
+    <h1>Exercice 1.2.5 : Explorer un arbre</h1>
+    <p>
+      Dans le langage de programmation de votre choix : <br />
+
+      Définir la méthode pour trouver une valeur donnée dans un arbre binaire de
+      recherche <br />
+
+      Écrire la méthode pour afficher l’arbre selon un parcours infixe <br />
+
+      Écrire la méthode pour supprimer un noeud donné en distinguant trois cas :
+      <br />
+
+      Le noeud est une feuille -> suppression simple <br />
+
+      Le noeud a un seul enfant -> il est remplacé par lui <br />
+
+      Le noeud à deux enfants, on le remplace alors par le noeud le plus proche,
+      c’est à dire le noeud le plus à droite de l’arbre gauche ou le plus à
+      gauche de l'arbre droit.<br />
+
+      Une autre solution consiste à définir l’arbre sur un tableau. La première
+      case, d’indice 0, est la racine de l'arbre. Pour un noeud donné, son fils
+      à gauche est à la position 2n+1 et son fils de droite à la position 2N+2.
+      L'absence d'un noeud doit être représenté par un symbole spécial (Null,
+      undefined ... ) mais la case doit être allouée. Le père d’un noeud donné
+      se retrouve avec l’arrondi inférieur de l’indice de n divisé par 2
+    </p>
+    <script type="text/javascript">
+        class Noeud {
+          constructor(valeur, noeudParent) {
+            this.value = valeur;
+            this.left = undefined;
+            this.right = undefined;
+            this.parent = noeudParent;
+          }
+
+          // Affiche la valeur du noeud et la valeur de ses deux enfants et de son parent
+          toString() {
+            var out = "Noeud " + this.value + ":  L";
+
+            this.left === undefined ? (out += "-") : (out += this.left.value);
+            out += " R";
+
+            this.right === undefined ? (out += "-") : (out += this.right.value);
+            out += " P";
+
+            this.parent === undefined ? (out += "-") : (out += this.parent.value);
+            log(out);
+          }
+        }
+
+        class Arbre {
+          constructor() {
+            this.racine = undefined;
+          }
+          //Méthode pour ajouter un noeud
+          ajouterNoeud(v) {
+            if (this.racine === undefined) this.racine = new Noeud(v, undefined);
+            else this._ajouter(v, this.racine);
+          }
+
+          _ajouter(val, nd) {
+            if (val < nd.value) {
+              if (nd.left !== undefined) this._ajouter(val, nd.left);
+              else nd.left = new Noeud(val, nd);
+            } else {
+              if (nd.right !== undefined) this._ajouter(val, nd.right);
+              else nd.right = new Noeud(val, nd);
+            }
+          }
+        }
+        //Méthode pour afficher l’arbre selon un parcours infixe
+        //Cette méthode doit retournée un tableau contenant la valeur des noeuds
+
+        function infixe(nd, parcours) {
+          countOp++;
+          if (parcours == "PreOrder") nd.print();
+          if (nd.left !== undefined) display(nd.left, parcours);
+          if (parcours == "InOrder") nd.print();
+          if (nd.right !== undefined) display(nd.right, parcours);
+          if (parcours == "PostOrder") nd.print();
+        }
+        //Méthode pour trouver une valeur donnée dans un arbre binaire de recherche
+        function trouverNoeud(nd, toFind) {
+          countOp++;
+          if (nd.value == toFind) {
+            log("Noeud " + toFind + " found: ");
+            nd.print();
+            throw nd;
+          } else {
+            if (nd.left !== undefined) search(nd.left, toFind);
+            if (nd.right !== undefined) search(nd.right, toFind);
+          }
+        }
+
+        //Méthode pour supprimer un noeud
+        function supprimerNoeud(valeur) {
+          if (valeur === undefined) {
+            log("Noeud inconnu");
+            return;
+          } else if (valeur.left === undefined && valeur.right === undefined) {
+            valeur.print();
+            if (
+              valeur.parent.left !== undefined &&
+              valeur.parent.left.value == valeur.value
+            )
+              valeur.parent.left = undefined;
+            else if (
+              valeur.parent.right !== undefined &&
+              valeur.parent.right.value === valeur.value
+            )
+              valeur.parent.right = undefined;
+            else throw "Erreur dans les parents/enfants";
+            log("Noeud " + valeur.value + " supprimé");
+          } else if (valeur.left !== undefined && valeur.right !== undefined) {
+            var nextRight = valeur.right;
+            while (nextRight.left !== undefined) {
+              nextRight = nextRight.left;
+            }
+
+            var nextLeft = valeur.left;
+            while (nextLeft.right !== undefined) {
+              nextLeft = nextLeft.right;
+            }
+            log(
+              "Noeud " +
+                valeur.value +
+                " avec 2 enfants, nextLeft: " +
+                nextLeft.value +
+                " nextRight: " +
+                nextRight.value
+            );
+            if (nextRight.value - valeur.value < valeur.value - nextLeft.value) {
+              if (nextRight != valeur.right) {
+                deleteNoeud(nextRight);
+                valeur.value = nextRight.value;
+              } else {
+                valeur.value = nextRight.value;
+                valeur.right = valeur.right.right;
+              }
+            } else {
+              if (nextLeft != valeur.left) {
+                deleteNoeud(nextLeft);
+                valeur.value = nextLeft.value;
+              } else {
+                valeur.value = nextLeft.value;
+                valeur.right = valeur.left.left;
+              }
+            }
+          } else {
+            log("Noeud avec un seul enfant:");
+            valeur.print();
+
+            if (valeur.left !== undefined) {
+              if (valeur.parent.right.value == valeur.value)
+                valeur.parent.right = valeur.left;
+              else if (valeur.parent.left.value == valeur.value)
+                valeur.parent.left = valeur.left;
+              else throw "Erreur";
+            } else {
+              if (valeur.parent.right.value == valeur.value)
+                valeur.parent.right = valeur.right;
+              else if (valeur.parent.left.value == valeur.value)
+                valeur.parent.left = valeur.right;
+              else throw "Erreur";
+            }
+          }
+          //Méthode pour afficher la valeur d'un noeud à partir de sa valeur
+      printNoeud (valeur) {
+          let noeud = this.trouverNoeud(valeur);
+          if (noeud !== undefined) noeud.toString();
+      }
+        }
+    </script>
+  </body>
+</html>

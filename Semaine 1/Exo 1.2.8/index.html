@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/spacelab/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sZG5VVk41YqhJjYXgJFoRVd3d2AdDgy4oyIytQJMGx/Mizz1N+5bgKQBSCGfKQnP"
+      crossorigin="anonymous"
+    />
+
+    <title>Alyra Exo 1.2.8</title>
+  </head>
+  <body>
+    <h1>Exercice 1.2.8 : Créer un arbre de Merkle</h1>
+
+    <p>
+      Écrire un programme qui étant donné des chaînes de caractères (A, B, C, D)
+      crée l'arbre de merkle correspondant et l’affiche.
+    </p>
+    <img
+      src="https://ecole.alyra.fr/pluginfile.php/1468/mod_assign/intro/6666.png"
+      alt=""
+      role="presentation"
+      width="339"
+      height="212"
+    />
+    <p>
+      Représenter un arbre en JavaScript Pour représenter un arbre en JavaScript
+      on peut utiliser un objet (voir exercices précédents), un tableau une
+      ligne, ou un tableau à plusieurs lignes:
+    </p>
+
+    <img
+      src="https://ecole.alyra.fr/pluginfile.php/1468/mod_assign/intro/Screenshot%20from%202019-04-26%2013-25-54.png"
+      alt="Representation en tableau d'un arbre"
+      width="520"
+      height="273"
+      class="img-responsive atto_image_button_text-bottom"
+    />
+
+    <script type="text/javascript">
+      const a = "A";
+      const b = "B";
+      const c = "C";
+      const d = "D";
+
+      const tableau = [];
+      tableau.push(a, b, c, d);
+      console.log(tableau);
+
+      const arbreMerkle = [];
+
+      const merkleTree = () => {
+        for (i = 0; i < tableau.length; i++) {
+          arbreMerkle.push(tableau[i] + i);
+        }
+        console.log(arbreMerkle);
+      };
+      merkleTree();
+
+      // ... Pas du tout finis ...
+    </script>
+  </body>
+</html>
