@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-WTtvlZJeRyCiKUtbQ88X1x9uHmKi0eHCbQ8irbzqSLkE0DpAZuixT5yFvgX0CjIu"
+      crossorigin="anonymous"
+    />
+    <title>Alyra Exo 1.3.5</title>
+  </head>
+  <body>
+    <h1>Exercice 1.3.5 :Génèrer une adresse type bitcoin</h1>
+    <p>
+      Écrire un programme qui génère une adresse type bitcoin à partir d’un
+      nombre:
+    </p>
+    <ul>
+      <li>
+        Calculer le hash SHA 256 puis RIPEMD160 ( voir librairies ci-dessous)
+      </li>
+      <li>Ajouter l’identifiant au début, et le contrôle à la fin</li>
+      <li>Convertir le nombre en base 58</li>
+    </ul>
+    <input
+      size="150"
+      class="form-control"
+      placeholder="Saisissez une suite de chiffre pour la transformer en adresse BTC"
+      type="number"
+      id="nombre"
+    />
+    <button class="btn btn-secondary" id="boutton">soumettre</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+
+    <script type="text/javascript">
+      let adressBtc = "";
+      let temp = "";
+      let temp2 = "";
+      let temp3 = "";
+      const getBtcAdress = () => {
+        const nombre = document.getElementById("nombre").value;
+        console.log(nombre);
+        temp = sha256(nombre);
+        console.log(temp);
+        temp = "0x00" + temp;
+        console.log(temp);
+        temp2 = sha256(temp);
+        console.log(temp2);
+        temp3 = sha256(temp2);
+        console.log(temp3);
+        temp2 = temp3.substring(0, 3);
+        console.log(temp2);
+        temp = temp + temp2;
+        console.log(temp);
+        adresseBtc = bs58.temp(bytes);
+        alert(`l'adresse est ${adressBtc}`);
+      };
+
+      const action = (document.getElementById(
+        "boutton"
+      ).onclick = getBtcAdress);
+    </script>
+  </body>
+</html>
