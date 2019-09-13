@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-WTtvlZJeRyCiKUtbQ88X1x9uHmKi0eHCbQ8irbzqSLkE0DpAZuixT5yFvgX0CjIu"
+      crossorigin="anonymous"
+    />
+    <title>Entrainement : Chiffre et déchiffrer un message de Vigenere</title>
+  </head>
+  <body>
+    <h1>Entrainement : Chiffre et déchiffrer un message de Vigenere</h1>
+    <h2>Entrainement A</h2>
+
+    <p>
+      À partir de l'exercice 1.3.1 écrire la fonction (ou le programme) Vigenère
+      qui prend en paramètre un mot clé et convertit un texte en sa version
+      chiffrée.
+    </p>
+    <div class="input-group input-group-lg">
+      <div class="input-group-prepend">
+        <input
+          size="150"
+          class="form-control"
+          placeholder="Saisissez le texte à crypter"
+          type="text"
+          id="texteSoumis"
+        />
+      </div>
+      <div class="input-group-prepend">
+        <input
+          size="50"
+          class="form-control mt-1"
+          placeholder="Saisissez le mot qui constituera la clé"
+          type="text"
+          id="cleSoumise"
+        />
+      </div>
+    </div>
+    <button id="bouton" class="btn btn-primary mt-1">Crypter</button>
+    <h2>Entrainement B</h2>
+    <p>
+      Écrire la fonction qui déchiffre un message en connaissant la clé<br />
+
+      (optionnel) en faire une option du programme précédent
+    </p>
+    <div class="input-group input-group-lg">
+      <div class="input-group-prepend">
+        <input
+          size="150"
+          class="form-control"
+          placeholder="Saisissez le texte crypté"
+          type="text"
+          id="texteSoumis2"
+        />
+      </div>
+      <div class="input-group-prepend">
+        <input
+          size="50"
+          class="form-control mt-1"
+          placeholder="Saisissez la clé"
+          type="text"
+          id="cleSoumise2"
+        />
+      </div>
+    </div>
+    <button id="bouton2" class="btn btn-primary mt-1">Décrypter</button>
+    <script type="text/javascript">
+      const abc = [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "0",
+        "à",
+        "é",
+        "è",
+        "ç",
+        ".",
+        "?",
+        "!",
+        ";",
+        ":",
+        "+",
+        "-",
+        "=",
+        " "
+      ];
+
+      const crypter = () => {
+        // On récupère le texte à crypter et la clé dans 2 variable.
+        let stringAEncrypter = document.getElementById("texteSoumis").value;
+        let key = document.getElementById("cleSoumise").value;
+        // On allonge la clé afin que son nombre de caractère soit suppèrieur au texte à crypter.
+        while (key.length < stringAEncrypter.length) {
+          key = key + key;
+        }
+        // On supprime les majuscules et on transforme en tableau
+        stringAEncrypter = stringAEncrypter.toLowerCase();
+        stringAEncrypter = stringAEncrypter.split("");
+        key = key.toLowerCase();
+        key = key.split("");
+        // Nous allons avoir besoin d'une clé chiffrée.
+        let cleChiffre = [];
+        console.log(stringAEncrypter + " " + key);
+        let stringCryptee = [];
+        for (i = 0; i < key.length; i++) {
+          for (j = 0; j < abc.length; j++) {
+            if (key[i] == abc[j]) {
+              cleChiffre.push([j]);
+            }
+          }
+        }
+        //la clé chiffré devient un tableau de number.
+        console.log(cleChiffre);
+
+        for (i = 0; i < stringAEncrypter.length; i++) {
+          for (j = 0; j < abc.length; j++) {
+            if (
+              stringAEncrypter[i] == abc[j] &&
+              parseFloat(cleChiffre[i]) + j <= abc.length
+            ) {
+              stringCryptee.push(abc[parseFloat(cleChiffre[i]) + j]);
+            }
+            if (
+              stringAEncrypter[i] == abc[j] &&
+              parseFloat(cleChiffre[i]) + j > abc.length
+            )
+              stringCryptee.push(
+                abc[parseFloat(cleChiffre[i]) + j - abc.length]
+              );
+          }
+        }
+        console.log(stringCryptee);
+        stringCryptee = stringCryptee.join("");
+        alert(`Votre texte crypté devient : ${stringCryptee}`);
+      };
+
+      const bouton = (document.getElementById("bouton").onclick = crypter);
+
+      const decrypter = () => {
+        // On récupère le crypté et la clé dans 2 variables.
+        let stringCrypte = document.getElementById("texteSoumis2").value;
+        let key = document.getElementById("cleSoumise2").value;
+        // On allonge la clé afin que son nombre de caractère soit suppèrieur au texte crypté.
+        while (key.length < stringCrypte.length) {
+          key = key + key;
+        }
+        // On supprime les majuscules et on transforme en tableau
+        stringCrypte = stringCrypte.toLowerCase();
+        stringCrypte = stringCrypte.split("");
+        key = key.toLowerCase();
+        key = key.split("");
+        // Nous allons avoir besoin d'une clé chiffrée.
+        let cleChiffre = [];
+        console.log(stringCrypte + " " + key);
+        let stringDecryptee = [];
+        for (i = 0; i < key.length; i++) {
+          for (j = 0; j < abc.length; j++) {
+            if (key[i] == abc[j]) {
+              cleChiffre.push([j]);
+            }
+          }
+        }
+        //la clé chiffré devient un tableau de number.
+        console.log(cleChiffre);
+
+        for (i = 0; i < stringCrypte.length; i++) {
+          for (j = 0; j < abc.length; j++) {
+            if (
+              stringCrypte[i] == abc[j] &&
+              j - parseFloat(cleChiffre[i]) >= 0
+            ) {
+              stringDecryptee.push(abc[parseFloat(j - cleChiffre[i])]);
+            }
+            if (stringCrypte[i] == abc[j] && j - parseFloat(cleChiffre[i]) < 0)
+              stringDecryptee.push(
+                abc.length - (j - abc[parseFloat(cleChiffre[i])])
+              );
+          }
+        }
+        console.log(stringDecryptee);
+        stringDecryptee = stringDecryptee.join("");
+        alert(`Votre texte décrypté est : ${stringDecryptee}`);
+      };
+      const bouton2 = (document.getElementById("bouton2").onclick = decrypter);
+    </script>
+  </body>
+</html>
