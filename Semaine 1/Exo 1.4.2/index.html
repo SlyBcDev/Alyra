@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-WTtvlZJeRyCiKUtbQ88X1x9uHmKi0eHCbQ8irbzqSLkE0DpAZuixT5yFvgX0CjIu"
+      crossorigin="anonymous"
+    />
+    <title>Alyra Exo 1.4.2</title>
+  </head>
+  <body>
+    <h1>Exercice 1.4.2 : Convertir un nombre en little endian</h1>
+
+    <p>
+      Compléter la fonction de l’exercice précédent pour convertir un nombre en
+      sa notation variable little endian Reprendre le programme de conversion de
+      l’exercice précédent pour donner la notation hexadécimale en entier
+      variable d’un nombre donné Par exemple:
+    </p>
+    <ul>
+      <li>
+        conversion(466321)
+      </li>
+      <li>466321 → 0x 07 1d 91 (big endian)</li>
+      <li>466321 → 0x 91 1d 07 (little endian)</li>
+      <li>466321 → 0x fe 91 1d 07 00 (notation variable)</li>
+    </ul>
+    <input
+      size="6"
+      class="form-control"
+      placeholder="Saisissez une suite de chiffre pour la transformer en Hexadecimale"
+      type="number"
+      id="nombre"
+    />
+    <button class="btn btn-secondary" id="boutton">soumettre</button>
+
+    <script type="text/javascript">
+      let hexa1 = "";
+      let bigEndian = "";
+      let littleEndian = "";
+      let varInt = "";
+
+      const convertHexa = () => {
+        let nombre = document.getElementById("nombre").value;
+        nombre = parseInt(nombre);
+        hexa1 = nombre.toString(16);
+        console.log(hexa1);
+        bigEndian = "0x0" + hexa1;
+        console.log(`Big endian est: ${bigEndian}`);
+        let temp = [];
+        for (let i = 0; i < bigEndian.length; i += 2) {
+          temp.push(bigEndian.substr(i, 2));
+        }
+        let temp2 = [];
+        temp2.push(temp[0]);
+        for (i = temp.length - 1; i > 0; i--) {
+          temp2.push(temp[i]);
+        }
+        littleEndian = temp2.join("");
+        console.log(`little endian est: ${littleEndian}`);
+      };
+
+      const action = (document.getElementById("boutton").onclick = convertHexa);
+    </script>
+  </body>
+</html>
