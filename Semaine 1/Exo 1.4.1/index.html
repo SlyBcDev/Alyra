@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-WTtvlZJeRyCiKUtbQ88X1x9uHmKi0eHCbQ8irbzqSLkE0DpAZuixT5yFvgX0CjIu"
+      crossorigin="anonymous"
+    />
+    <title>Alyra Exo 1.4.1</title>
+  </head>
+  <body>
+    <h1>Exercice 1.4.1 : Convertir un nombre décimal en hexadécimal</h1>
+    <p>
+      Écrire un programme qui convertisse un nombre décimal en sa version
+      hexadécimal little endian et hexadécimal big endian sans avoir recours aux
+      fonctions de conversion du langage utilisé
+    </p>
+    <ul>
+      <li>
+        conversion(466321)
+      </li>
+      <li>466321 → 0x 07 1d 91 (big endian)</li>
+      <li>466321 → 0x 91 1d 07 (little endian)</li>
+    </ul>
+    <input
+      size="6"
+      class="form-control"
+      placeholder="Saisissez une suite de chiffre pour la transformer en Hexadecimale"
+      type="number"
+      id="nombre"
+    />
+    <button class="btn btn-secondary" id="boutton">soumettre</button>
+
+    <script type="text/javascript">
+      let hexa1 = "";
+      const convertHexa = () => {
+        let nombre = document.getElementById("nombre").value;
+        nombre = parseInt(nombre);
+        hexa1 = nombre.toString(16);
+        console.log(hexa1);
+        let hexaLittleEndian = "0x0" + hexa1;
+        console.log(hexaLittleEndian);
+      };
+
+      const action = (document.getElementById("boutton").onclick = convertHexa);
+    </script>
+  </body>
+</html>
