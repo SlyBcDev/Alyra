@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-WTtvlZJeRyCiKUtbQ88X1x9uHmKi0eHCbQ8irbzqSLkE0DpAZuixT5yFvgX0CjIu"
+      crossorigin="anonymous"
+    />
+    <title>Alyra Exo 1.4.3</title>
+  </head>
+  <body>
+    <h1>
+      Exercice 1.4.3 : Identifier les différents champs d'une entrée de
+      transaction
+    </h1>
+
+    <p>
+      Écrire un programme qui sépare sur une ligne différente chaque champ de
+      l’entrée suivante :
+    </p>
+    <ul>
+      <li>
+        941e985075825e09de53b08cdd346bb67075ef0ce5c94f98853292d4bf94c10d010000006b483045022100ab44ef4
+        25e6d85c03cf301bc16465e3176b55bba9727706819eaf07cf84cf52d02203f7dc7ae9ab36bead14dd3c83c8c030bf8
+        ce596e692021b66441b39b4b35e64e012102f63ae3eba460a8ed1be568b0c9a6c947abe9f079bcf861a7fdb2fd577ed
+        48a81Feffffff
+      </li>
+    </ul>
+
+    <button class="btn btn-secondary" id="boutton">Action</button>
+
+    <script type="text/javascript">
+      const data =
+        "941e985075825e09de53b08cdd346bb67075ef0ce5c94f98853292d4bf94c10d010000006b483045022100ab44ef425e6d85c03cf301bc16465e3176b55bba9727706819eaf07cf84cf52d02203f7dc7ae9ab36bead14dd3c83c8c030bf8ce596e692021b66441b39b4b35e64e012102f63ae3eba460a8ed1be568b0c9a6c947abe9f079bcf861a7fdb2fd577ed48a81Feffffff";
+      let dataArray = [];
+      let hashTx = [];
+      let outPut = [];
+      let sequence = [];
+      let scriptSig = [];
+
+      const splitChamp = () => {
+        for (i = 0; i < data.length; i += 2) {
+          dataArray.push(data.substr(i, 2));
+        }
+        for (j = 0; j < 32; j++) {
+          hashTx.push(dataArray[j]);
+        }
+        dataArray = dataArray.slice(32);
+        hashTx = hashTx.join("");
+        console.log(`Le hash de la transaction est: ${hashTx}`);
+        for (k = 0; k < 4; k++) {
+          outPut.push(dataArray[k]);
+        }
+        dataArray = dataArray.slice(4);
+        outPut = outPut.join("");
+        console.log(`L'output' de la transaction est: ${outPut}`);
+
+        for (l = dataArray.length - 4; l < dataArray.length; l++) {
+          sequence.push(dataArray[l]);
+        }
+        for (l = 1; l <= 4; l++) {
+          dataArray.pop();
+        }
+        sequence = sequence.join("");
+        scriptSig = dataArray.join("");
+        console.log(`Le Scriptsig de la transaction est: ${scriptSig}`);
+        console.log(`La sequence de la transaction est: ${sequence}`);
+      };
+
+      const action = (document.getElementById("boutton").onclick = splitChamp);
+    </script>
+  </body>
+</html>
