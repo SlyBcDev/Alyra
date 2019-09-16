@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Difficulté réajustée?</title>
+  </head>
+  <body>
+    <h1>Exercice 2.1.3</h1>
+    <p>
+      Écrire une fonction blocReajustement(hauteurBloc) qui détermine s’il
+      s’agit d’un bloc pendant lequel la difficulté est réajustée ou non.
+    </p>
+    <script type="text/javascript">
+      const blocReajustement = hauteurBloc => {
+        return hauteurBloc % 2016 === 0 ? true : false;
+      };
+      console.log(blocReajustement(556416));
+    </script>
+  </body>
+</html>
