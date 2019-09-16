@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-WTtvlZJeRyCiKUtbQ88X1x9uHmKi0eHCbQ8irbzqSLkE0DpAZuixT5yFvgX0CjIu"
+      crossorigin="anonymous"
+    />
+    <title>Alyra Exo 1.4.4</title>
+  </head>
+  <body>
+    <h1>
+      Exercice 1.4.4 : décomposer une transaction
+    </h1>
+
+    <p>
+      Étant donné la transaction brute suivante écrire dans le langage de votre
+      choix un script qui extrait les différents champs de la transaction. Par
+      simplicité, on pourra dans un premier temps supposer que tous les varInt
+      sont codés sur un octet.
+    </p>
+    <ul>
+      <li>
+        0100000001f129de033c57582efb464e94ad438fff493cc4de4481729b859712368582
+        75c2010000006a4730440220155a2ea4a702cadf37052c87bfe46f0bd24809759acff8
+        d8a7206979610e46f6022052b688b784fa1dcb1cffeef89e7486344b814b0c578133a7
+        b0bce5be978a9208012103915170b588170cbcf6380ef701d19bd18a526611c0c69c62
+        d2c29ff6863d501affffffff02ccaec817000000001976a9142527ce7f0300330012d6
+        f97672d9acb5130ec4f888ac18411a000000000017a9140b8372dffcb39943c7bfca84
+        f9c40763b8fa9a068700000000
+      </li>
+    </ul>
+
+    <button class="btn btn-secondary" id="boutton">Action</button>
+
+    <script type="text/javascript">
+      const data =
+        "0100000001f129de033c57582efb464e94ad438fff493cc4de4481729b85971236858275c2010000006a4730440220155a2ea4a702cadf37052c87bfe46f0bd24809759acff8d8a7206979610e46f6022052b688b784fa1dcb1cffeef89e7486344b814b0c578133a7b0bce5be978a9208012103915170b588170cbcf6380ef701d19bd18a526611c0c69c62d2c29ff6863d501affffffff02ccaec817000000001976a9142527ce7f0300330012d6f97672d9acb5130ec4f888ac18411a000000000017a9140b8372dffcb39943c7bfca84f9c40763b8fa9a068700000000";
+
+      let dataArray = [];
+      let version = [];
+      let nbInPut = [];
+      let hashOldTx = [];
+      let indexOutput = [];
+      let scriptSig = [];
+      let sequence = [];
+
+      const splitChamp = () => {
+        for (i = 0; i < data.length; i += 2) {
+          dataArray.push(data.substr(i, 2));
+        }
+        for (j = 0; j < 4; j++) {
+          version.push(dataArray[j]);
+        }
+        dataArray = dataArray.slice(4);
+        version = version.join("");
+        console.log(`La version de la transaction est: ${version}`);
+
+        nbInPut.push(dataArray[0]);
+        dataArray = dataArray.slice(1);
+        nbInPut = nbInPut.join("");
+        console.log(`Le nombre d'input de la transaction est: ${nbInPut}`);
+
+        for (l = 0; l < 32; l++) {
+          hashOldTx.push(dataArray[l]);
+        }
+        dataArray = dataArray.slice(32);
+        hashOldTx = hashOldTx.join("");
+        console.log(`Le hash des transactions passées est: ${hashOldTx}`);
+
+        for (m = 0; m < 4; m++) {
+          indexOutput.push(dataArray[m]);
+        }
+        dataArray = dataArray.slice(4);
+        indexOutput = indexOutput.join("");
+        console.log(`L'index de sortie de la transaction est: ${indexOutput}`);
+
+        for (n = dataArray.length - 4; n < dataArray.length; n++) {
+          sequence.push(dataArray[n]);
+        }
+        for (o = 1; o <= 4; o++) {
+          dataArray.pop();
+        }
+        sequence = sequence.join("");
+        scriptSig = dataArray.join("");
+        console.log(`Le Scriptsig de la transaction est: ${scriptSig}`);
+        console.log(`La sequence de la transaction est: ${sequence}`);
+      };
+
+      const action = (document.getElementById("boutton").onclick = splitChamp);
+    </script>
+  </body>
+</html>
