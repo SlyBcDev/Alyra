@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Identifier le niveau de difficulté d’un bloc</title>
+  </head>
+  <body>
+    <h1>Exercice 2.1.2</h1>
+    <p>
+      Écrire une fonction calculerDifficule(bits) qui, étant donné le champ Bits
+      d’un bloc en déduit la difficulté<br />
+
+      Pour mémoire, nous avons vu ce qu’était le champ Bits dans le cours sur le
+      protocole et livre blanc.<br />
+
+      Sous cette forme hexadécimale, le premier octet représente le nombre
+      d'octets, le reste représente un coefficient.<br />
+      0x1c0ae493 est donc composé de l'exposant 0x1c = 28 et du coefficient
+      0x0ae493.<br />
+      Le nombre se comprend donc comme 0x0ae49300 00000000 00000000 00000000
+      00000000 00000000 00000000 en hexadécimal (comptez le nombre de caractères
+      par exemple, hors "0x", deux caractères par octets).<br />
+      <br />
+      Aide<br />
+      Vous pouvez utiliser pour le convertir ensuite en nombre décimal<br />
+      En javascript : parseInt("0xXXX", 16);<br />
+      En python : int("0xXXX", 16)
+    </p>
+    <script type="text/javascript">
+      const calculerDifficulte = bits => {
+        let cibleMax = (Math.pow(2, 16) - 1) * Math.pow(2, 208);
+        return (
+          cibleMax /
+          parseInt(
+            bits.substring(4, bits.length) +
+              "00".repeat(parseInt(bits.substring(2, 4), 16) - 3),
+            16
+          )
+        );
+      };
+      console.log(calculerDifficulte("0x1c0ae493"));
+      console.log(calculerDifficulte("0x03000001"));
+    </script>
+  </body>
+</html>
