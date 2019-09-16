@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Écrire une fonction qui convertit la cible en difficulté.</title>
+  </head>
+  <body>
+    <h1>Difficulté.</h1>
+    <p>
+      Écrire une fonction qui convertit la cible en difficulté.
+    </p>
+    <script type="text/javascript">
+      const calculerDifficulte = cible => {
+        let cibleMax = (Math.pow(2, 16) - 1) * Math.pow(2, 208);
+        let difficulty = cibleMax / cible;
+        return difficulty;
+      };
+      console.log(
+        calculerDifficulte(
+          1147152896345386682952518188670047452875537662186691235300769792000
+        )
+      );
+      console.log(calculerDifficulte(1));
+    </script>
+  </body>
+</html>
