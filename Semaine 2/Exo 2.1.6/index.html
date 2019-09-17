@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Calcul récompense</title>
+  </head>
+  <body>
+    <h1>Exercice 2.1.6 : Calculer Nombre de BTC en circulation</h1>
+    <p>
+      Écrire une fonction bitcoinsEnCirculation(hauteurBloc) qui, étant donné
+      une hauteur de bloc, calcule le nombre total de bitcoins en circulation
+      lors de la publication de ce bloc.
+    </p>
+    <script type="text/javascript">
+      const bitcoinsEnCirculation = hauteurBloc => {
+        let circSupply = 5000000000;
+        let recompense = 5000000000;
+        for (let i = 1; i <= hauteurBloc; i++) {
+          if (i % 210000 === 0) {
+            recompense = Math.floor(recompense / 2);
+            circSupply += recompense;
+          } else {
+            circSupply += recompense;
+          }
+        }
+
+        return circSupply / 100000000;
+      };
+
+      console.log(bitcoinsEnCirculation(0));
+      console.log(bitcoinsEnCirculation(1));
+      console.log(bitcoinsEnCirculation(210000));
+      console.log(bitcoinsEnCirculation(2100001));
+    </script>
+  </body>
+</html>
