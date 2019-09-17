@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Calcul récompense</title>
+  </head>
+  <body>
+    <h1>Exercice 2.1.5 : Calculer la récompense associée à un bloc</h1>
+    <p>
+      Écrire une fonction recompenseBloc(hauteurBloc) qui, étant donné une
+      hauteur de bloc, calcule la récompense associée à ce bloc.
+    </p>
+    <script type="text/javascript">
+      const recompenseBloc = hauteurBloc => {
+        let nombreDeDivision = Math.floor(hauteurBloc / 210000);
+        let recompense = 5000000000;
+        let temp = 5000000000;
+        for (let i = 0; i < nombreDeDivision; i++) {
+          temp = Math.floor(temp / 2);
+          recompense = temp;
+        }
+        recompense = recompense / 100000000;
+        return recompense;
+      };
+      console.log(recompenseBloc(0));
+      console.log(recompenseBloc(210000));
+      console.log(recompenseBloc(2100001));
+    </script>
+  </body>
+</html>
