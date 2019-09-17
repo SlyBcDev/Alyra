@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T5jhQKMh96HMkXwqVMSjF3CmLcL1nT9//tCqu9By5XSdj7CwR0r+F3LTzUdfkkQf"
+      crossorigin="anonymous"
+    />
+    <title>Récupérer la récompense en cours à un instant t</title>
+  </head>
+  <body>
+    <h1>Exercice 2.1.7 : Récupérer la récompense en cours à un instant t</h1>
+    <p>
+      Écrire un programme qui prend en paramètre une date et retourne la
+      récompense actuelle et le nombre total de bitcoins en circulation à cette
+      date. Combien il y aura-t-il de Bitcoins en circulation au maximum en
+      2100?
+    </p>
+  </div>
+    <script type="text/javascript">
+      
+      let datePremierBtc = new Date("January 01, 2010 00:00:00 GMT+00:00");
+      datePremierBtc =datePremierBtc.getTime()
+
+
+      let dateDemande =new Date("January 01, 2100 00:00:00 GMT+00:00");
+      let tempsExistanceBtc = dateDemande-datePremierBtc;
+
+      // Un bloc toute les 10 minutes soit 10 x60000 =600 000
+      hauteurBlocEn2100 = Math.floor(tempsExistanceBtc/600000);
+      console.log(hauteurBlocEn2100);
+
+      let dateDemande2 =new Date("January 01, 2050 00:00:00 GMT+00:00");
+      let tempsExistanceBtc2 = dateDemande2-datePremierBtc;
+
+      // Un bloc toute les 10 minutes soit 10 x60000 =600 000
+      hauteurBlocEn2050 = Math.floor(tempsExistanceBtc2/600000);
+      console.log(hauteurBlocEn2050);
+
+      const bitcoinsEnCirculation = hauteurBloc => {
+        let circSupply = 5000000000;
+        let recompense = 5000000000;
+        for (let i = 1; i <= hauteurBloc; i++) {
+          if (i % 210000 === 0) {
+            recompense = Math.floor(recompense / 2);
+            circSupply += recompense;
+          } else {
+            circSupply += recompense;
+          }
+        }
+        circSupply = circSupply/100000000
+        console.log(`Le cirulation supply  sera de ${circSupply}BTC`);
+        console.log(`La récompense de minage sera alors de ${recompense} Satoshis`);
+
+
+      };
+
+    bitcoinsEnCirculation(hauteurBlocEn2100);
+    bitcoinsEnCirculation(hauteurBlocEn2050);
+
+
+
+    </script>
+  </body>
+</html>
