@@ -164,6 +164,27 @@ const calculerDifficulte = cible => {
 };
 
 //===============================================================
+// Calculer la récompense à partir d'un timestamp.
+//===============================================================
+
+const calculRecompense = a => {
+  let datePremierBtc = new Date("January 01, 2010 00:00:00 GMT+00:00");
+  datePremierBtc = datePremierBtc.getTime();
+
+  let tempsExistanceBtc = a - datePremierBtc;
+
+  // Un bloc toutes les 10 minutes soit 10 x60000 =600 000
+  hauteurBlocADate = Math.floor(tempsExistanceBtc / 600000);
+
+  let recompense = 50;
+  nbHalving = Math.floor(hauteurBlocADate / 210000);
+  for (i = 0; i <= nbHalving; i++) {
+    recompense = recompense / 2;
+  }
+  return recompense;
+};
+
+//===============================================================
 // Décrypter le bloc.
 //===============================================================
 
@@ -179,6 +200,7 @@ let timeStamp = "";
 let bits = "";
 let difficulty = "";
 let nonce = "";
+let recompense = 0;
 
 const decrypterBloc = a => {
   // Entête:
@@ -186,6 +208,7 @@ const decrypterBloc = a => {
     entete = entete + blockBtc[i];
   }
   document.getElementById("entete").textContent = ` Entête du bloc: ${entete}`;
+
   // Version:
   for (i = 0; i < 8; i++) {
     version = version + entete[i];
@@ -231,9 +254,10 @@ const decrypterBloc = a => {
 
   // Difficulté:
   cible = hexaToDeci(bits);
-  console.log(cible);
   difficulty = calculerDifficulte(cible);
-  console.log(difficulty);
+  document.getElementById(
+    "difficulte"
+  ).textContent = `Difficulté: ${difficulty}`;
 
   // Nonce:
   for (i = 152; i < 160; i++) {
@@ -242,41 +266,10 @@ const decrypterBloc = a => {
   nonce = littleEndianToHexa(nonce);
   nonce = hexaToDeci(nonce);
   document.getElementById("nonce").textContent = `Nonce: ${nonce}`;
+
+  // Récompense:
+  recompense = calculRecompense(timeStamp);
+  document.getElementById(
+    "reward"
+  ).textContent = `Récompense: ${recompense} BTC`;
 };
-
-/*
-// ici 1 block  de la blockchain BTC
-const blockRandom =
-  "a15e218f5f158a31053ea101b917a6113c807f6bcdc85a000000000000000000cc7cf9eab23c2eae050377375666cd7862c1dfeb81abd3198c3a3f8e045d91484a39225af6d00018659e5e8a0101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff64030096072cfabe6d6d08d1c2f6d904f4e1cd10c6558f8e5aed5d6a89c43bb22862464ebb819dd8813404000000f09f909f104d696e6564206279206a6f73656d7372000000000000000000000000000000000000000000000000000000000000000000007f06000001807c814a000000001976a914c825a1ecf2a6830c4401620c3a16f1995057c2ab88acefebcf38";
-// On crée un objet pour pouvoir y insérer les infos du dernier bloc miné
-let btcObject = {};
-
-// =================================================================
-// Requete ajax pour récupérer les infos du dernier bloc BTC via API
-// =================================================================
-
-// Solution abandonnée car on récupère un objet déjà détaillé.
-
-
-const requete = valeur => {
-  let xhr = new XMLHttpRequest();
-
-  xhr.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      btcObject = JSON.parse(this.responseText);
-      console.log(btcObject);
-    } else if (this.readyState == 4 && this.status == 404) {
-      alert("erreur 404");
-    }
-  };
-
-  xhr.open(
-    "GET",
-    "https://chain.api.btc.com/v3/block/latest/tx?verbose=3",
-    true
-  );
-  xhr.responseType = "text";
-  xhr.send();
-};
-
-const refresh = (document.getElementById("refresh").onclick = requete);*/
