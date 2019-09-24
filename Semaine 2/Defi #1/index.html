@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/slate/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-FBPbZPVh+7ks5JJ70RJmIaqyGnvMbeJ5JQfEbW0Ac6ErfvEg9yG56JQJuMNptWsH"
+      crossorigin="anonymous"
+    />
+    <script src="script.js"></script>
+    <title>Alyra Défi 1: BTC Explorer</title>
+  </head>
+  <body class="text-white">
+    <div class="bg-primary m-3 p-3 text-center">
+      <h1>Alyra Défi 1 : Explorateur de bloc BTC</h1>
+    </div>
+
+        <!-- Décimale vers Hexa -->
+    <div class="row text-center ml-3 p-3">
+      <div class="ml-3 bg-secondary col-5">
+        <h4>
+          Conversion d'un décimal en <i class="text-warning">Hexadécimal</i>:
+        </h4>
+        <div class="row">
+        <input
+          class="form-control col-8 ml-1"
+          type="number"
+          id="value1"
+          placeholder="Saisissez un nombre décimal"
+        />
+        <button class="btn-warning col-2 ml-1" id="btn1">Soumetre</button>
+      </div>
+        <h6 class="m-3" id="result1">Résultat:</h6>
+      </div>
+      <script type="text/javascript">
+        document.getElementById("btn1").addEventListener("click",function(){
+        result1 = document.getElementById("result1");
+        decimale = parseFloat(document.getElementById("value1").value);
+        hexa = deciToHexa(decimale);
+        result1.textContent = `Résultat: ${hexa} `;
+        });
+      </script>
+ 
+      <!-- Hexa vers Décimale -->
+      <div class="ml-5 p-1 bg-info col-5">
+        <h4>
+          Conversion d'un
+          <i class="text-warning">Hexadécimal</i> en décimal:
+        </h4>
+        <div class="row">
+        <input
+          class="form-control col-8 ml-3"
+          type="text"
+          id="value2"
+          placeholder="Saisissez un nombre Hexadécimal"
+        />
+        <button class="btn-warning col-2 ml-1" id="btn2">Soumetre</button>
+      </div>
+        <h6 class="m-3" id="result2">Résultat:</h6>
+      </div>  
+      <script type="text/javascript">
+      document.getElementById("btn2").addEventListener("click",function(){
+        result2 = document.getElementById("result2");
+        hexa = document.getElementById("value2").value;
+        decimale = hexaToDeci(hexa);
+        result2.textContent = `Résultat: ${decimale}`;
+        });
+      </script>
+    </div>
+
+    <div class="row text-center ml-3 p-3">
+        <div class="ml-3 bg-info col-5">
+    <!--  Décimale vers Binaire -->
+    
+    <h4>Conversion d'un décimal en <i class="text-warning">Binaire</i>:</h4>
+      <div class="row">
+      <input
+        class="form-control col-8 ml-1"
+        type="number"
+        id="value3"
+        placeholder="Saisissez un nombre décimal"
+      />
+      <button class="btn-warning col-2 ml-1" id="btn3">Soumetre</button>
+    </div>
+      <h6 class="m-3" id="result3">Résultat:</h6>
+    </div>
+    <script type="text/javascript">
+      document.getElementById("btn3").addEventListener("click",function(){
+      result3 = document.getElementById("result3");
+      decimale = parseFloat(document.getElementById("value3").value);
+      binaire = deciToBinaire(decimale);
+      result3.textContent = `Résultat: ${binaire} `;
+      });
+    </script>
+
+      <!-- Binaire vers Décimale -->
+      <div class="ml-5 p-1 bg-secondary col-5">
+          <h4>
+            Conversion d'un
+            <i class="text-warning">Binaire</i> en décimal:
+          </h4>
+          <div class="row">
+          <input
+            class="form-control col-8 ml-3"
+            type="number"
+            id="value4"
+            placeholder="Saisissez un nombre Binaire"
+          />
+          <button class="btn-warning col-2 ml-1" id="btn4">Soumetre</button>
+        </div>
+          <h6 class="m-3" id="result4">Résultat:</h6>
+        </div>  
+        <script type="text/javascript">
+        document.getElementById("btn4").addEventListener("click",function(){
+          result4 = document.getElementById("result4");
+          binaire = document.getElementById("value4").value;
+          decimale = binaireToDecimale(binaire);
+          result4.textContent = `Résultat: ${decimale}`;
+          });
+        </script>
+      </div>
+    </div>
+    <div class="row text-center ml-3 p-3">
+    <div class="ml-3 p-1 bg-secondary col-5">
+        <!-- Binaire vers Hexa -->
+        <h4>
+            Conversion d'un
+            <i class="text-warning">Binaire</i> en Hexadécimal:
+          </h4>
+          <div class="row">
+          <input
+            class="form-control col-8 ml-3"
+            type="number"
+            id="value5"
+            placeholder="Saisissez un nombre Binaire"
+          />
+          <button class="btn-warning col-2 ml-1" id="btn5">Soumetre</button>
+        </div>
+          <h6 class="m-3" id="result5">Résultat:</h6>
+        </div>  
+        <script type="text/javascript">
+        document.getElementById("btn5").addEventListener("click",function(){
+          result5 = document.getElementById("result5");
+          binaire = document.getElementById("value5").value;
+          hexa = binaireToHexa(binaire);
+          result5.textContent = `Résultat: ${hexa}`;
+          });
+        </script>
+
+      <!-- Hexa vers Binaire -->
+      <div class="ml-5 p-1 bg-info col-5">
+          <h4>
+              Conversion d'un
+              <i class="text-warning">Hexadécimal</i> en Binaire:
+            </h4>
+            <div class="row">
+            <input
+              class="form-control col-8 ml-3"
+              type="text"
+              id="value6"
+              placeholder="Saisissez un Hexadécimal"
+            />
+            <button class="btn-warning col-2 ml-1" id="btn6">Soumetre</button>
+          </div>
+            <h6 class="m-3" id="result6">Résultat:</h6>
+          </div>  
+          <script type="text/javascript">
+            document.getElementById("btn6").addEventListener("click",function(){
+              result6 = document.getElementById("result6");            
+              hexa = document.getElementById("value6").value;
+              binaire = hexaToBinaire(hexa);
+              result6.textContent = `Résultat: ${binaire}`;
+              });
+            </script>
+    </div>
+  </div>
+
+    <!--  Hexa vers LittleEndian -->
+    <div class="row text-center ml-3 p-3">
+        <div class="ml-3 bg-info col-5">
+          <h4>
+            Conversion d'un Hexadécimal en <i class="text-warning">Little Endian</i>:
+          </h4>
+          <div class="row">
+          <input
+            class="form-control col-8 ml-1"
+            type="text"
+            id="value7"
+            placeholder="Saisissez un Hexadécimal"
+          />
+          <button class="btn-warning col-2 ml-1" id="btn7">Soumetre</button>
+        </div>
+          <h6 class="m-3" id="result7">Résultat:</h6>
+        </div>
+        <script type="text/javascript">
+          document.getElementById("btn7").addEventListener("click",function(){
+          result7 = document.getElementById("result7");
+          hexa = document.getElementById("value7").value;
+          littleEndian = hexaToLittleEndian(hexa);
+          result7.textContent = `Résultat: ${littleEndian} `;
+          });
+        </script>
+   
+        <!-- Little Endian vers Hexadécimale -->
+        <div class="ml-5 p-1 bg-secondary col-5">
+          <h4>
+            Conversion d'un
+            <i class="text-warning">Little Endian</i> en Hexadécimal:
+          </h4>
+          <div class="row">
+          <input
+            class="form-control col-8 ml-3"
+            type="text"
+            id="value8"
+            placeholder="Saisissez un nombre Hexadécimal"
+          />
+          <button class="btn-warning col-2 ml-1" id="btn8">Soumetre</button>
+        </div>
+          <h6 class="m-3" id="result8">Résultat:</h6>
+        </div>  
+        <script type="text/javascript">
+        document.getElementById("btn8").addEventListener("click",function(){
+          result8 = document.getElementById("result8");
+          littleEndian = document.getElementById("value8").value;
+          hexa = littleEndianToHexa(littleEndian);
+          result8.textContent = `Résultat: ${hexa}`;
+          });
+        </script>
+      </div>
+
+    <div class="row text-center ml-3 p-3">
+      <div class="ml-3 p-1 bg-secondary col-5">
+
+        <!-- VarInt vers Décimale -->
+        <h4>
+            Conversion d'un
+            <i class="text-warning">VarInt</i> en Décimal:
+          </h4>
+          <div class="row">
+          <input
+            class="form-control col-8 ml-3"
+            type="text"
+            id="value9"
+            placeholder="Saisissez un nombre Hexadécimal"
+          />
+          <button class="btn-warning col-2 ml-1" id="btn9">Soumetre</button>
+        </div>
+          <h6 class="m-3" id="result9">Résultat:</h6>
+        </div>  
+        <script type="text/javascript">
+        document.getElementById("btn9").addEventListener("click",function(){
+          result9 = document.getElementById("result9");
+          varInt = document.getElementById("value9").value;
+          decimale = varIntToDecimale(varInt);
+          result9.textContent = `Résultat: ${decimale}`;
+          });
+        </script>
+      </div>
+    </div>
+    
+    <h6 class="m-3 p-3 text-center">Exemple d'un block Btc</h6>
+    <p class="m-3 p-3 text-center">
+  00000020a15e218f5f158a31053ea101b917a6113c807f6bcdc85a000000000000000000<br>
+  cc7cf9eab23c2eae050377375666cd7862c1dfeb81abd3198c3a3f8e045d91484a39225a<br>
+  f6d00018659e5e8a01010000000100000000000000000000000000000000000000000000<br>
+  00000000000000000000ffffffff64030096072cfabe6d6d08d1c2f6d904f4e1cd10c655<br>
+  8f8e5aed5d6a89c43bb22862464ebb819dd8813404000000f09f909f104d696e65642062<br>
+  79206a6f73656d7372000000000000000000000000000000000000000000000000000000<br>
+  000000000000007f06000001807c814a000000001976a914c825a1ecf2a6830c4401620c<br>
+  3a16f1995057c2ab88acefebcf38
+
+    </p>
+    <button 
+    class="btn btn-secondary btn-lg btn-block mx-3 px-3" 
+    id="refresh" 
+    onclick="decrypterBloc()"
+    > Détailler ce bloc.</button>
+    </div>
+    <div class="ml-3 mr-1 ">
+        <ul class="list-group">
+          <h3 class="list-group-item bg-primary">Détails:</h3>
+          <li class="list-group-item" id="entete">
+            Entête du bloc: 
+          </li>
+          <li class="list-group-item list-group-item-primary" id="version">
+            Version:
+          </li>
+          <li class="list-group-item list-group-item-secondary" id="previousBloc">
+            Bloc Précédent:
+          </li>
+          <li class="list-group-item list-group-item-success" id="merkle">
+            Hash arbre de Merkle: 
+          </li>
+          <li class="list-group-item list-group-item-danger" id="date">
+            Date du bloc:
+          </li>
+          <li class="list-group-item list-group-item-warning" id="bits">
+            Bits:
+          </li>
+          <li class="list-group-item list-group-item-info" id="difficulte">
+            Difficulté: 
+          </li>
+          <li class="list-group-item list-group-item-light" id="nonce">
+            Nonce :
+          </li>
+          <li class="list-group-item list-group-item-dark" id="version">
+            Version = <strong>0</strong>
+          </li>
+          <li class="list-group-item list-group-item-secondary" id="nonce">
+            Nonce : <strong>0</strong>
+          </li>
+          <li class="list-group-item list-group-item-success" id="recompense">
+            Récompense du bloc : <strong>0</strong>
+          </li>
+        </ul>
+  
+        <ul class="list-group">
+          <h3 class="list-group-item bg-primary">Hashes</h3>
+          <li class="list-group-item" id="hash">Hash : <strong>0</strong></li>
+          <li class="list-group-item list-group-item-primary" id="blocPredcedent">
+            Bloc précédent : <strong>0</strong>
+          </li>
+          <li class="list-group-item list-group-item-secondary" id="blocSuivant">
+            Bloc suivant : <strong>0</strong>
+          </li>
+          <li class="list-group-item list-group-item-success" id="merkle">
+            Racine de Merkle : <strong>0</strong>
+          </li>
+        </ul>
+      </div>
+  </body>
+</html>
