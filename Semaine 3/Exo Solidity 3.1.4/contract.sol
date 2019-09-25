@@ -1,14 +1,11 @@
+pragma solidity ^0.5.7;
+
 contract Assemblee {
 
   address[] membres;
-  Decision[] decisions;
-
-  struct Decision{
-  string descriptionDecisions;
-  uint votesPour;
-  uint votesContre;
-  mapping (address => bool) aVote;
-  }
+  string[] descriptionDecisions;
+  uint[] votesPour;
+  uint[] votesContre;
 
   function rejoindre() public{
       membres.push(msg.sender);
@@ -24,20 +21,24 @@ contract Assemblee {
   }
 
   function proposerDecision(string memory description) public {
-      decisions.push(Decision(description,0,0));  
+    if(estMembre(msg.sender)){
+      descriptionDecisions.push(description);
+      votesPour.push(0);
+      votesContre.push(0);
+    }
   }
 
   function voter(uint indiceVote, uint vote)public {
     if(estMembre(msg.sender)){
       if(vote == 1){
-        decisions[indiceVote].votesPour +=1;
+        votesPour[indiceVote] +=1;
       } if(vote == 0){
-        decisions[indiceVote].votesContre +=1;
-      } 
+        votesPour[indiceContre] +=1;
+      }
     }
   }
 
   function comptabiliser(uint indice) public view returns (int){
-  return int(decisions[indice].votesPour) - int(decisions[indice].votesContre);
+    return int(votesPour[indice]) - int(votesContre[indice]);
   }
 }
