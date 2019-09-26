@@ -1,44 +1,54 @@
-pragma solidity ^0.5.7;
+pragma solidity ^0.4.25;
 
 contract Assemblee {
+    address[] membres;
 
-  address[] membres;
-  string[] descriptionDecisions;
-  uint[] votesPour;
-  uint[] votesContre;
-
-  function rejoindre() public{
-      membres.push(msg.sender);
-  }
-
-  function estMembre(address utilisateur) public view returns (bool){
-    for(uint i=0;i<membres.length;i++){
-      if(membres[i]==utilisateur){
-        return true;
-        break;
-      }
+    struct Decision {
+        string description;
+        uint votePour;
+        uint voteContre;
+        mapping (address => bool) aVote;
+        uint date;
     }
-  }
-
-  function proposerDecision(string memory description) public {
-    if(estMembre(msg.sender)){
-      descriptionDecisions.push(description);
-      votesPour.push(0);
-      votesContre.push(0);
+    Decision[] public decisions;
+    
+    function rejoindre() public{
+        membres.push(msg.sender);
     }
-  }
-
-  function voter(uint indiceVote, uint vote)public {
-    if(estMembre(msg.sender)){
-      if(vote == 1){
-        votesPour[indiceVote] +=1;
-      } if(vote == 0){
-        votesPour[indiceContre] +=1;
-      }
+    
+    function estMembre(address utilisateur) public view returns(bool) {
+        for (uint i=0;i<membres.length; i++){
+            if(membres[i] == utilisateur){
+                return true;
+                break;
+            }
+        }
     }
-  }
-
-  function comptabiliser(uint indice) public view returns (int){
-    return int(votesPour[indice]) - int(votesContre[indice]);
-  }
+    
+    function supprimerDecision(uint indiceDecision) public {
+        if(int(now) - int(decisions[indiceDecision].date)< 604800)
+            delete decisions[indiceDecision];
+    }
+    
+    function proposerDecision(string memory description) public {
+        require(estMembre(msg.sender),"Vous n'êtes pas membre, rejoignez nous d'abord.");
+            decisions.push(Decision(description,0,0,now));
+        }
+    
+    
+    function voter(uint indiceDecision, bool pourContre) public{
+        require(estMembre(msg.sender),"Vous n'êtes pas membre, rejoignez nous d'abord.");
+        require(decisions[indiceDecision].aVote[msg.sender]!= true,"Vous avez déjà voté");
+        if(pourContre==true){
+            decisions[indiceDecision].votePour ++;
+        }
+        else{
+            decisions[indiceDecision].voteContre ++;
+        }
+        decisions[indiceDecision].aVote[msg.sender] = true;
+    }
+    
+    function comptabiliser(uint indiceDecision) public view returns (int) {
+        return int(decisions[indiceDecision].votePour) - int(decisions[indiceDecision].voteContre);
+    }
 }
