@@ -100,6 +100,7 @@ contract PlaceDeMarche {
       require(entreprise[msg.sender],"Vous n'avez pas fait d'offres.");
       require(tableauDesTravauxRemis[indice].adresseProprio == msg.sender,"Vous n'avez aucun droit sur cette offre");
       tableauDesTravauxRemis[indice].travailAccepte = true;
+      reputation[tableauDesTravauxRemis[indice].adresse]+=1;
   }
   
   function reclamerSalaire(uint indice) public payable{
