@@ -11,20 +11,52 @@
     <title>Section illustrateur</title>
   </head>
   <body>
-    <div class="text-center m-5">
-      <h1>Bienvenu dans l'espace illustrateur</h1>
-      <div class="row m-5">
-        <div class="col-6">
-          <a class="btn btn-primary btn-lg btn-block" href="entreprise.html">
-            Vous êtes une entreprise ?
-          </a>
-        </div>
-        <div class="col-6">
-          <a class="btn btn-primary btn-lg btn-block" href="illustrateur.html">
-            Vous êtes un illustrateur ?
-          </a>
-        </div>
-      </div>
+    <div class="text-center m-3">
+      <h1>Bienvenu dans l'espace illustrateur.</h1>
+      <input placeholder="Votre nom." id="nom" />
+      <button
+        onclick="_sinscrire()"
+        class="btn btn-primary btn-lg btn-block m-2"
+        href="entreprise.html"
+      >
+        Inscrivez vous.
+      </button>
     </div>
+
+    <button onclick="_afficherOffre()" class="btn-lg btn-primary mx-5 my-2">
+      Actualiser les offres
+    </button>
+    <div class="m-5">
+      <table class="table table-bordered" id="tableau">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Entreprise</th>
+            <th scope="col">Salaire</th>
+            <th scope="col">Réputation requise</th>
+            <th scope="col">Description</th>
+            <th scope="col">Etat</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="row m-5">
+      <h5>Postuler à l'offre : </h5>
+      <input class="ml-2"type="number" id="quelleOffre"/>
+      <button class="btn-primary" onclick="_postuler()">Je postule.</button>
+    </div>
+    <div class=" row m-5">
+      <h5>Vos missions en attente: </h5>
+      <button class="btn-primary" onclick="_visualiser()"> Visualiser </button>
+      <h5 class="m-2" id="aFaire"></h5>
+    </div>
+
+    <script
+      charset="utf-8"
+      src="https://cdn.ethers.io/scripts/ethers-v4.min.js"
+      type="text/javascript"
+    ></script>
+    <script src="index.js"></script>
   </body>
 </html>
