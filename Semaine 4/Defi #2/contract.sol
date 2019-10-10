@@ -14,6 +14,7 @@ contract PlaceDeMarche {
   mapping (address => string) public nomUtilisateur;
   uint public nombreDUtilisateurs;
   uint public nombreDOffres;
+  uint public nombreDeTravauxRemis;
   uint[] listeDesOffres;
   address[] public adresseUtilisateurs;
   
@@ -30,9 +31,17 @@ contract PlaceDeMarche {
   mapping (uint => uint) public reputationRequiseOffre;
   mapping (uint => address) public proprietaireOffre;
   
-  mapping (address => uint) public canditature1;
+  mapping (address => uint) public canditature1; // indiquera l'indice de l'offre à laquelle le candidat
+  mapping (address => bool) public canditature1Acceptee; // etat temporaire pour signifier au candidat qu'il peut réaliser la mission
+  mapping (address => bool) public travailAccepteCandidature1; // etat temporaire qui permettra au candidat de réclamer son paiement
+  
   mapping (address => uint) public canditature2;
-  mapping (address => uint) public canditature3; // Il est possible qu'un illustrateur candidate à maximum 3 offres à la fois.
+  mapping (address => bool) public canditature2Acceptee;
+  mapping (address => bool) public travailAccepteCandidature2;
+  
+  mapping (address => uint) public canditature3;
+  mapping (address => bool) public canditature3Acceptee;
+  mapping (address => bool) public travailAccepteCandidature3;// Il est possible qu'un illustrateur candidate à maximum 3 offres à la fois.
   
   function ajouterOffre(
       uint prix,
@@ -66,7 +75,7 @@ contract PlaceDeMarche {
   
   travailRemis[] public tableauDesTravauxRemis; // un tableau de tavaux remis.
   
-  struct CandidatOffre{ // un candidat à une offre est une adresse associer à l'index de l'offre dans le tableau des offres.
+  struct CandidatOffre{ // un candidat à une offre est une adresse associée à l'index de l'offre dans le tableau des offres.
       address adresse;
       uint quelleOffre;
       bool candidatureAcceptee;
@@ -75,53 +84,61 @@ contract PlaceDeMarche {
   
  CandidatOffre[] candidats; // tableau des candidats associé à l'offre à laquelle il a postulé, le candidat peut postuler à plusieurs offres, dans ce cas son adresse apparaitra plusieurs fois dans le tableau..
  
-  function afficherCandidatureAcceptee() public view returns(uint){
-      for(uint i=0; i< candidats.length; i++){
-            if(candidats[i].adresse == msg.sender && candidats[i].offreAcceptee == true){
-                return(candidats[i].quelleOffre);
-            } 
-      }
+  function afficherCandidatureAcceptee() public view returns(uint){ // retourne l'ID de la candidature acceptée
+    if(canditature1Acceptee[msg.sender]== true){
+        return(canditature1[msg.sender]);
+    } else if(canditature2Acceptee[msg.sender]== true){
+        return(canditature2[msg.sender]);
+    } else if(canditature3Acceptee[msg.sender]== true){
+        return(canditature3[msg.sender]);
+    }
   }
- 
-  function rejeterCandidat(uint indice, address adresseCandidat)public{
+  
+  function rejeterCandidat(uint indice, address adresseCandidat)public{ // permet de refuser une candidature
      require(proprietaireOffre[indice] == msg.sender,"Vous n'êtes pas propriétaire de cette offre");
      require(canditature1[adresseCandidat] == indice || canditature2[adresseCandidat] == indice || canditature3[adresseCandidat] == indice,"Ce candidat n'a pas candidaté à cette offre.");
-     if(canditature1[msg.sender] == indice){
-          canditature1[msg.sender] = 0;
-      } else if(canditature2[msg.sender] == indice){
-          canditature2[msg.sender] = 0;
-      } else if(canditature3[msg.sender] == indice){
-          canditature3[msg.sender] = 0;
+     if(canditature1[adresseCandidat] == indice){
+          canditature1[adresseCandidat] = 0;
+      } else if(canditature2[adresseCandidat] == indice){
+          canditature2[adresseCandidat] = 0;
+      } else if(canditature3[adresseCandidat] == indice){
+          canditature3[adresseCandidat] = 0;
       }
  }
  
  function accepterCandidature(uint indice, address adresseCandidat) public{
     require(proprietaireOffre[indice] == msg.sender,"Vous n'êtes pas propriétaire de cette offre");
     require(canditature1[adresseCandidat] == indice || canditature2[adresseCandidat] == indice || canditature3[adresseCandidat] == indice,"Ce candidat n'a pas candidaté à cette offre.");
-    for(uint i=0; i<candidats.length;i++){
-        if(candidats[i].quelleOffre==indice){
-            candidats[i].candidatureAcceptee = true;
-        }
+    
+    if(canditature1[adresseCandidat] == indice){
+        canditature1Acceptee[adresseCandidat] = true;
+    } else if(canditature2[adresseCandidat] == indice){
+        canditature2Acceptee[adresseCandidat] = true;
+    } else if(canditature3[adresseCandidat] == indice){
+        canditature3Acceptee[adresseCandidat] = true;
     }
+    
     etatActuelOffre[indice]= etatOffre.ENCOURS;
  }
  
   function accepterTravail(uint indice, address adresse) public {
-      require(entreprise[msg.sender],"Vous n'avez pas fait d'offres.");
-      for(uint i = 0; i<listeDesOffres.length; i++){
-          if(proprietaireOffre[i]==msg.sender){
-            for(uint j=0; j<candidats.length; j++){
-              if(candidats[j].adresse == adresse && candidats[j].quelleOffre==indice){
-                  etatActuelOffre[i] = etatOffre.ENCOURS;
-                  candidats[j].offreAcceptee = true;
-                }
-            }
-        }
+    require(entreprise[msg.sender],"Vous n'avez pas fait d'offres.");
+    require((canditature1[adresse] == indice && canditature1Acceptee[adresse] == true) 
+    || (canditature2[adresse] == indice && canditature2Acceptee[adresse] == true)
+    || (canditature3[adresse] == indice && canditature3Acceptee[adresse] == true)
+    ,"Ce candidat n'a pas candidaté à cette offre.");
+    if (canditature1[adresse] == indice && canditature1Acceptee[adresse] == true){
+        travailAccepteCandidature1[adresse] = true;
+    } else if (canditature2[adresse] == indice && canditature2Acceptee[adresse] == true){
+        travailAccepteCandidature2[adresse] = true;
+    } else if (canditature3[adresse] == indice && canditature3Acceptee[adresse] == true){
+        travailAccepteCandidature3[adresse] = true;
     }
   }
   
   function postuler(uint j)public{
-      require(canditature1[msg.sender]==0 || canditature2[msg.sender]==0 || canditature3[msg.sender]==0 ,"Vous ne pouvez postuler qu'à une seule offre.");
+      require(canditature1[msg.sender]!=j && canditature2[msg.sender]!=j && canditature3[msg.sender]!=j ,"Vous avez déjà postulé à cette offre.");
+      require(canditature1[msg.sender]==0 || canditature2[msg.sender]==0 || canditature3[msg.sender]==0 ,"Vous ne pouvez pas postuler plus de 3 fois.");
       require(estUtilisateur(msg.sender),"Vous n'êtes pas enregistré sur la plateforme.");
       require(reputation[msg.sender]>=reputationRequiseOffre[j],"Vous ne pouvez pas candidater à cette offre. (réputation trop faible)");
       require(etatActuelOffre[j] == etatOffre.OUVERTE);
@@ -136,32 +153,56 @@ contract PlaceDeMarche {
   }
   
   function livraison(string memory hash, uint indiceOffre) public {
-      for(uint i=0; i<candidats.length ; i++){
-          if(candidats[i].quelleOffre==indiceOffre && candidats[i].candidatureAcceptee == true){
-            tableauDesTravauxRemis.push(travailRemis(msg.sender,indiceOffre,hash,false,salaireOffre[indiceOffre],proprietaireOffre[indiceOffre]));
-          }
-      }
+      if(canditature1[msg.sender]==indiceOffre && canditature1Acceptee[msg.sender]== true){
+          tableauDesTravauxRemis.push(travailRemis(msg.sender,indiceOffre,hash,false,salaireOffre[indiceOffre],proprietaireOffre[indiceOffre]));
+      } else if(canditature2[msg.sender]==indiceOffre && canditature2Acceptee[msg.sender]== true){
+          tableauDesTravauxRemis.push(travailRemis(msg.sender,indiceOffre,hash,false,salaireOffre[indiceOffre],proprietaireOffre[indiceOffre]));
+      } else if(canditature3[msg.sender]==indiceOffre && canditature3Acceptee[msg.sender]== true){
+          tableauDesTravauxRemis.push(travailRemis(msg.sender,indiceOffre,hash,false,salaireOffre[indiceOffre],proprietaireOffre[indiceOffre]));
     }
+    nombreDeTravauxRemis+=1;
+  }
   
   function afficherLivraison(uint indice) public view returns(string memory hash){
+      require(tableauDesTravauxRemis[indice].adresseProprio==msg.sender, "Vous ne pouvez pas regarder cette Livraison");
       for(uint i=0; i<tableauDesTravauxRemis.length; i++){
-          if(tableauDesTravauxRemis[i].indiceOffre == indice ){
-              return(tableauDesTravauxRemis[i].hash);
+          if(tableauDesTravauxRemis[i].indiceOffre == indice){
+            return(tableauDesTravauxRemis[i].hash);
           }
       }
   }
   
-  function validerLeTravailRecu (uint indice) public payable{
+  function validerLeTravailRecu (uint indice) public{
     require(entreprise[msg.sender],"Vous n'avez pas fait d'offres.");
       for(uint i=0; i<tableauDesTravauxRemis.length; i++){
           if(tableauDesTravauxRemis[i].indiceOffre == indice
           && tableauDesTravauxRemis[i].adresseProprio == msg.sender){
             tableauDesTravauxRemis[i].travailAccepte = true;
-            etatActuelOffre[i]= etatOffre.FERMEE;
-            reputation[tableauDesTravauxRemis[indice].adresse]+=1;
-            (tableauDesTravauxRemis[i].adresse).transfer(tableauDesTravauxRemis[i].salaire);
+            etatActuelOffre[indice]= etatOffre.FERMEE;
+            reputation[tableauDesTravauxRemis[i].adresse]+=1;
           }
-        }
+    }
+  }
+  
+  function reclamerPaiement(uint indice) public payable{
+      for(uint i=0;i<tableauDesTravauxRemis.length;i++){
+          if(tableauDesTravauxRemis[i].adresse==msg.sender && tableauDesTravauxRemis[i].travailAccepte==true){
+            msg.sender.transfer(tableauDesTravauxRemis[i].salaire);
+                if (canditature1[tableauDesTravauxRemis[i].adresse] ==indice){
+                canditature1[tableauDesTravauxRemis[i].adresse] = 0;
+                canditature1Acceptee[tableauDesTravauxRemis[i].adresse] = false;
+                travailAccepteCandidature1[tableauDesTravauxRemis[i].adresse]= false;
+                }  else if (canditature2[tableauDesTravauxRemis[i].adresse] ==indice){
+                canditature2[tableauDesTravauxRemis[i].adresse] = 0;
+                canditature2Acceptee[tableauDesTravauxRemis[i].adresse] = false;
+                travailAccepteCandidature2[tableauDesTravauxRemis[i].adresse]= false;
+                }  else if (canditature3[tableauDesTravauxRemis[i].adresse] ==indice){
+                canditature3[tableauDesTravauxRemis[i].adresse] = 0;
+                canditature3Acceptee[tableauDesTravauxRemis[i].adresse] = false;
+                travailAccepteCandidature3[tableauDesTravauxRemis[i].adresse]= false;
+                }  
+          }
+      }
   }
   
   function sInscrire(string memory nom) public{

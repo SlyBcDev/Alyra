@@ -11,6 +11,7 @@
     <title>Section Entreprise</title>
   </head>
   <body>
+    <a href="illustrateur.html">Illustrateur</a>
     <div class="text-center m-3">
       <h1>Bienvenu dans l'espace entreprise.</h1>
       <input placeholder="Votre nom." id="nom" />
@@ -26,22 +27,22 @@
       <div>
         <h3 class="text-center">Proposer une mission</h3>
         <div class="form-group">
-          <label>Salaire en Ether</label>
+          <label>Salaire en Ether:</label>
           <input type="number" value="" id="salaire" />
         </div>
 
         <div class="form-group">
-          <label>Delai</label>
-          <input type="text" value="" id="delai" />
+          <label>Date de livraison souhaitée:</label>
+          <input type="date" value="" id="delai" />
         </div>
 
         <div class="form-group"></div>
-        <label> Reputation requise</label>
+        <label> Reputation requise:</label>
         <input type="text" value="" id="reputationReq" />
       </div>
 
       <div class="form-group my-2">
-        <label>Description</label>
+        <label>Description:</label>
         <textarea
           type="text"
           row="4"
@@ -57,7 +58,9 @@
     </div>
     <div class="text-center">
       <h3>Voir les postulents à vos offres</h3>
-      <button class="btn-primary" onclick="_afficherCandidats()">Actualiser</button>
+      <button class="btn-primary" onclick="_afficherCandidats()">
+        Actualiser
+      </button>
       <div class="m-5">
         <table class="table table-bordered" id="tableauCandidats">
           <thead>
@@ -65,6 +68,29 @@
               <th scope="col">#</th>
               <th scope="col">Candidats</th>
               <th scope="col">Réputation</th>
+              <th scope="col">Canditature pour Mission n°</th>
+              <th scope="col">Description</th>
+              <th scope="col">Refuser</th>
+              <th scope="col">Accepter</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <h3>Voir les livraisons de vos offres</h3>
+      <button class="btn-primary" onclick="_afficherLivraison()">
+        Actualiser
+      </button>
+      <div class="m-5">
+        <table class="table table-bordered" id="tableauLivraisons">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Candidats</th>
+              <th scope="col">URL de livraison</th>
               <th scope="col">Canditature pour Mission n°</th>
               <th scope="col">Description</th>
               <th scope="col">Refuser</th>

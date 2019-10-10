@@ -11,6 +11,7 @@
     <title>Section illustrateur</title>
   </head>
   <body>
+    <a href="entreprise.html">Entreprise</a>
     <div class="text-center m-3">
       <h1>Bienvenu dans l'espace illustrateur.</h1>
       <input placeholder="Votre nom." id="nom" />
@@ -42,14 +43,20 @@
       </table>
     </div>
     <div class="row m-5">
-      <h5>Postuler à l'offre : </h5>
-      <input class="ml-2"type="number" id="quelleOffre"/>
+      <h5>Postuler à l'offre :</h5>
+      <input class="ml-2" type="number" id="quelleOffre" />
       <button class="btn-primary" onclick="_postuler()">Je postule.</button>
     </div>
     <div class=" row m-5">
-      <h5>Vos missions en attente: </h5>
-      <button class="btn-primary" onclick="_visualiser()"> Visualiser </button>
+      <h5>Vos missions en attente:</h5>
+      <button class="btn-primary" onclick="_visualiser()">Visualiser</button>
       <h5 class="m-2" id="aFaire"></h5>
+    </div>
+
+    <div>
+      <button class="btn-primary m-5" onclick="_reclamerPaiement()">
+        Réclamer vos paiements en attente
+      </button>
     </div>
 
     <script
