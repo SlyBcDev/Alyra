@@ -1,0 +1,21 @@
+/**
+ * Colissimo Like
+ */
+
+namespace Colissimo.Like
+
+asset Colis identified by colisId {
+  o String colisId
+  o String localisation
+  --> Personne emetteur
+  --> Personne destinataire
+}
+
+participant Personne identified by nom {
+  o String nom
+  --> Address domicile
+}
+
+participant Address identified by id {
+  o String id
+}
