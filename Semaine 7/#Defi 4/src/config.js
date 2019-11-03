@@ -1,8 +1,8 @@
 import Web3 from "web3";
 
-export const CONTRACT_ADDRESS = "0x99c07a19ef303b1e638e6eb1bfca3c2d6f7f96a6"; // Sur Kovan
+const CONTRACT_ADDRESS = "0x6c7d1222ff9a8332ae81797e978c18d655b5e024"; // Sur Kovan
 
-export const CONTRACT_ABI = [
+const CONTRACT_ABI =[
 	{
 		"constant": false,
 		"inputs": [
@@ -231,7 +231,7 @@ export const CONTRACT_ABI = [
 				"type": "bool"
 			},
 			{
-				"name": "_montantHollandais",
+				"name": "_montant",
 				"type": "uint256"
 			}
 		],
@@ -263,7 +263,7 @@ export const CONTRACT_ABI = [
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_tokenId",
+				"name": "_enchereId",
 				"type": "uint256"
 			}
 		],
@@ -290,7 +290,21 @@ export const CONTRACT_ABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "reclamerObjet",
+		"name": "reclamerPaiement",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "recupererCannasson",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -319,16 +333,7 @@ export const CONTRACT_ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"name": "_symbol",
-				"type": "string"
-			}
-		],
+		"inputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -383,6 +388,73 @@ export const CONTRACT_ABI = [
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_participant1",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_participant2",
+				"type": "uint256"
+			}
+		],
+		"name": "participantCourse",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_concurentId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "_winnerId",
+				"type": "uint256"
+			}
+		],
+		"name": "resultatCourse",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "afficherDateProchaineCourseGratuite",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "afficherNbreCourseGratuiteRestante",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [
 			{
@@ -428,6 +500,63 @@ export const CONTRACT_ABI = [
 			{
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "enchereHollandaise",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "estActive",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "estDispoPourGestation",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"payable": false,
@@ -499,6 +628,25 @@ export const CONTRACT_ABI = [
 				"type": "uint256"
 			}
 		],
+		"name": "finEnchere",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
 		"name": "levelDuCannasson",
 		"outputs": [
 			{
@@ -512,12 +660,36 @@ export const CONTRACT_ABI = [
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "name",
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "meilleurOffrant",
 		"outputs": [
 			{
-				"name": "_name",
-				"type": "string"
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "montantARembourser",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -627,11 +799,49 @@ export const CONTRACT_ABI = [
 				"type": "uint256"
 			}
 		],
+		"name": "obtenirEnchereId",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
 		"name": "ownerOf",
 		"outputs": [
 			{
 				"name": "_owner",
 				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "peutEtreRembourse",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"payable": false,
@@ -665,6 +875,25 @@ export const CONTRACT_ABI = [
 				"type": "uint256"
 			}
 		],
+		"name": "quiEstVendeur",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
 		"name": "sexeDuCannasson",
 		"outputs": [
 			{
@@ -678,12 +907,36 @@ export const CONTRACT_ABI = [
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "symbol",
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "tarifDemandePourGestation",
 		"outputs": [
 			{
-				"name": "_symbol",
-				"type": "string"
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "tarifEnchere",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -709,10 +962,10 @@ export const CONTRACT_ABI = [
 		"stateMutability": "view",
 		"type": "function"
 	}
-];
+]
 
-export const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+export const web3 = new Web3(Web3.givenProvider || "http://localhost:8545")
 export const CannassonRun = new web3.eth.Contract(
   CONTRACT_ABI,
   CONTRACT_ADDRESS
-);
+)
