@@ -1,6 +1,6 @@
 import Web3 from "web3";
 
-const CONTRACT_ADDRESS = "0x6c7d1222ff9a8332ae81797e978c18d655b5e024"; // Sur Kovan
+const CONTRACT_ADDRESS = "0xbef6fe0748d6f9ef0463823b1cd4743d05f98a31"; // Sur Kovan
 
 const CONTRACT_ABI =[
 	{
@@ -30,12 +30,7 @@ const CONTRACT_ABI =[
 			}
 		],
 		"name": "demanderControleAntiDopage",
-		"outputs": [
-			{
-				"name": "_message",
-				"type": "string"
-			}
-		],
+		"outputs": [],
 		"payable": true,
 		"stateMutability": "payable",
 		"type": "function"
@@ -58,12 +53,7 @@ const CONTRACT_ABI =[
 			}
 		],
 		"name": "doperCannasson",
-		"outputs": [
-			{
-				"name": "_newLevel",
-				"type": "uint256"
-			}
-		],
+		"outputs": [],
 		"payable": true,
 		"stateMutability": "payable",
 		"type": "function"
@@ -77,12 +67,7 @@ const CONTRACT_ABI =[
 			}
 		],
 		"name": "entrainerCannasson",
-		"outputs": [
-			{
-				"name": "_newLevel",
-				"type": "uint256"
-			}
-		],
+		"outputs": [],
 		"payable": true,
 		"stateMutability": "payable",
 		"type": "function"
@@ -392,23 +377,6 @@ const CONTRACT_ABI =[
 		"inputs": [
 			{
 				"indexed": false,
-				"name": "_participant1",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "_participant2",
-				"type": "uint256"
-			}
-		],
-		"name": "participantCourse",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
 				"name": "_tokenId",
 				"type": "uint256"
 			},
@@ -424,6 +392,30 @@ const CONTRACT_ABI =[
 			}
 		],
 		"name": "resultatCourse",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_levelUp",
+				"type": "uint256"
+			}
+		],
+		"name": "resultatEntrainement",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_message",
+				"type": "string"
+			}
+		],
+		"name": "resultatControleANtidopage",
 		"type": "event"
 	},
 	{
@@ -698,6 +690,20 @@ const CONTRACT_ABI =[
 	},
 	{
 		"constant": true,
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"name": "_symbol",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"constant": true,
 		"inputs": [
 			{
 				"name": "_tokenId",
@@ -903,6 +909,20 @@ const CONTRACT_ABI =[
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"name": "_symbol",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
