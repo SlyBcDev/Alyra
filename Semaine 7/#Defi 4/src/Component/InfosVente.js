@@ -16,9 +16,6 @@ class InfosVente extends Component {
 
   async loadCannassonData() {
     let id = this.props.id;
-    console.log(await CannassonRun.methods.enchereHollandaise(id).call());
-
-    console.log(await CannassonRun.methods.finEnchere(id).call());
 
     let nom = await CannassonRun.methods.nomDuCannasson(id).call();
     let famille = await CannassonRun.methods.fammileDuCannasson(id).call();
@@ -42,7 +39,10 @@ class InfosVente extends Component {
       .call();
     let proprio = await CannassonRun.methods.quiEstVendeur(id).call();
 
-    let meilleurOffre = await CannassonRun.methods.tarifEnchere(id).call();
+    let meilleurOffre = web3.utils.fromWei(
+      await CannassonRun.methods.tarifEnchere(id).call(),
+      "finney"
+    );
     let finEnchere = await CannassonRun.methods.finEnchere(id).call();
 
     let enchereHollandaise = await CannassonRun.methods
@@ -131,43 +131,47 @@ class InfosVente extends Component {
   render() {
     return (
       <div>
-        <div className="col-sm m-3">
-          <div className="card bg-light">
-            {this.state.enchereHollandaise ? (
-              <h3 className="bg-warning">Enchère Hollandaise</h3>
-            ) : (
-              <h3 className="bg-info"> Enchère classique </h3>
-            )}
+        {this.state.proprio === this.state.myAccount ? (
+          <div />
+        ) : (
+          <div className="col-sm m-3">
+            <div className="card bg-light">
+              {this.state.enchereHollandaise ? (
+                <h3 className="bg-warning">Enchère Hollandaise</h3>
+              ) : (
+                <h3 className="bg-info"> Enchère classique </h3>
+              )}
 
-            <div className="card-body">
-              <div>
-                <h5 className="card-title">{this.state.nom}</h5>
-                <p className="card-text">
-                  Famille : {this.state.famille} <br />
-                  Categorie : {this.state.categorie} <br />
-                  sexe : {this.state.sexe} <br />
-                  level : {this.state.level} <br />
-                  nombre de course : {this.state.nbreDeCourse} <br />
-                  nombre de victoire : {this.state.nbreDeVictoire} <br />
-                  nombre d'entrainement : {this.state.nbreEntrainement} <br />
-                  popularité : {this.state.popularite} <br />
-                  nombre de dopage avéré : {this.state.nbreDopageAvere} <br />
-                </p>
-                <h6 className="bg-secondary text-white">
-                  Prix de départ: {this.state.meilleurOffre} Finney
-                </h6>
-                <button className="btn-primary" onClick={this.faireUneOffre}>
-                  Faire une offre
-                </button>
-                <p>
-                  Fin de l'offre dans:
-                  <br />
-                  {this.state.stringDate}
-                </p>
+              <div className="card-body">
+                <div>
+                  <h5 className="card-title">{this.state.nom}</h5>
+                  <p className="card-text">
+                    Famille : {this.state.famille} <br />
+                    Categorie : {this.state.categorie} <br />
+                    sexe : {this.state.sexe} <br />
+                    level : {this.state.level} <br />
+                    nombre de course : {this.state.nbreDeCourse} <br />
+                    nombre de victoire : {this.state.nbreDeVictoire} <br />
+                    nombre d'entrainement : {this.state.nbreEntrainement} <br />
+                    popularité : {this.state.popularite} <br />
+                    nombre de dopage avéré : {this.state.nbreDopageAvere} <br />
+                  </p>
+                  <h6 className="bg-secondary text-white">
+                    Prix de départ: {this.state.meilleurOffre} Finney
+                  </h6>
+                  <button className="btn-primary" onClick={this.faireUneOffre}>
+                    Faire une offre
+                  </button>
+                  <p>
+                    Fin de l'offre dans:
+                    <br />
+                    {this.state.stringDate}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }

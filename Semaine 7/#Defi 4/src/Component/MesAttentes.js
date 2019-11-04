@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { CannassonRun, web3 } from "../config";
 import "bootstrap/dist/css/bootstrap.css";
 
-class DispoPourGestation extends Component {
+class MesAttentes extends Component {
   UNSAFE_componentWillMount() {
     this.loadCannassonData();
     this.loadWalletData();
@@ -16,6 +16,7 @@ class DispoPourGestation extends Component {
 
   async loadCannassonData() {
     let id = this.props.id;
+
     let nom = await CannassonRun.methods.nomDuCannasson(id).call();
     let famille = await CannassonRun.methods.fammileDuCannasson(id).call();
     let categorie = await CannassonRun.methods.categoryDuCannasson(id).call();
@@ -37,10 +38,27 @@ class DispoPourGestation extends Component {
       .nbreDopageDuCannasson(id)
       .call();
     let proprio = await CannassonRun.methods.quiEstVendeur(id).call();
-    let tarif = web3.utils.fromWei(
-      await CannassonRun.methods.tarifDemandePourGestation(id).call(),
+
+    let meilleurOffre = web3.utils.fromWei(
+      await CannassonRun.methods.tarifEnchere(id).call(),
       "finney"
     );
+    let finEnchere = await CannassonRun.methods.finEnchere(id).call();
+
+    let enchereHollandaise = await CannassonRun.methods
+      .enchereHollandaise(id)
+      .call();
+
+    let enchereId = await CannassonRun.methods.obtenirEnchereId(id).call();
+    let meilleurOffrant = await CannassonRun.methods.meilleurOffrant(id).call();
+
+    let now = Math.round(new Date().getTime() / 1000);
+    let timestamp = finEnchere;
+    let delai = timestamp - now;
+    let jour = Math.floor(delai / 86400);
+    let heure = Math.floor((delai % 86400) / 3600);
+    let min = Math.floor(((delai % 86400) % 3600) / 60);
+    let stringDate = `${jour}Jour(s),${heure}H ${min}min `;
 
     this.setState({
       id: id,
@@ -54,8 +72,13 @@ class DispoPourGestation extends Component {
       nbreEntrainement,
       popularite,
       nbreDopageAvere,
+      meilleurOffre,
+      finEnchere,
+      enchereHollandaise,
       proprio,
-      tarif
+      stringDate,
+      enchereId,
+      meilleurOffrant
     });
   }
 
@@ -73,14 +96,23 @@ class DispoPourGestation extends Component {
       nbreEntrainement: 0,
       popularite: 0,
       nbreDopageAvere: 0,
+      meilleurOffre: 0,
+      finEnchere: 0,
+      enchereHollandaise: false,
       proprio: "",
-      tarif: 0
+      stringDate: "",
+      enchereId: 0,
+      meilleurOffrant: ""
     };
   }
 
-  demanderGestation = async () => {
+  demanderPaiement = async () => {
+    await CannassonRun.methods.reclamerPaiement(this.state.id).call();
+  };
+
+  faireUneOffre = async () => {
     let value = prompt("Combien proposez vous ? (Montant en Finney)");
-    await CannassonRun.methods.proposerOffre(this.state.id).send(
+    await CannassonRun.methods.proposerOffre(this.state.enchereId).send(
       {
         from: this.state.myAccount,
         value: web3.utils.toWei(value, "finney")
@@ -108,7 +140,7 @@ class DispoPourGestation extends Component {
         ) : (
           <div className="col-sm m-3">
             <div className="card bg-light">
-              <h3 className="bg-primary">Dispo pour Gestation</h3>
+              <h3 className="bg-info"> Ma Vente </h3>
               <div className="card-body">
                 <div>
                   <h5 className="card-title">{this.state.nom}</h5>
@@ -117,16 +149,28 @@ class DispoPourGestation extends Component {
                     Categorie : {this.state.categorie} <br />
                     sexe : {this.state.sexe} <br />
                     level : {this.state.level} <br />
-                    nombre de course : {this.state.nbreDeCourse} <br />
-                    nombre de victoire : {this.state.nbreDeVictoire} <br />
-                    nombre d'entrainement : {this.state.nbreEntrainement} <br />
                     popularité : {this.state.popularite} <br />
-                    nombre de dopage avéré : {this.state.nbreDopageAvere} <br />
                   </p>
-                  <h6>Prix demmandé: {this.state.tarif} Finney</h6>
-                  <button onClick={this.demanderGestation}>
-                    Payer pour Gestation
-                  </button>
+                  {this.state.myAccount !== this.state.meilleurOffrant ? (
+                    <div>
+                      <h6 className="bg-secondary text-white">
+                        Meilleur Offre: {this.state.meilleurOffre} Finney
+                      </h6>
+                      <h6 className="bg-secondary text-white">
+                        Par: {this.state.meilleurOffrant}
+                      </h6>
+                    </div>
+                  ) : (
+                    <div>
+                      <h6>En attente d'offre</h6>
+                    </div>
+                  )}
+
+                  <p>
+                    Fin de l'offre dans:
+                    <br />
+                    {this.state.stringDate}
+                  </p>
                 </div>
               </div>
             </div>
@@ -136,4 +180,5 @@ class DispoPourGestation extends Component {
     );
   }
 }
-export default DispoPourGestation;
+
+export default MesAttentes;

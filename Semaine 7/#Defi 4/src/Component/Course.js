@@ -1,18 +1,13 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ProgressBar } from "react-bootstrap";
+import CoursePhoto from "../img/CoursePhoto.jpg";
 
 class Course extends Component {
   render() {
     return (
       <div>
-        <div className="m-3">
-          <div className="py-1">
-            <ProgressBar striped variant="danger" animated now={100} />
-          </div>
-          <div className="py-1">
-            <ProgressBar striped variant="success" animated now={40} />
-          </div>
+        <div className="m-5">
+          <img src={CoursePhoto} alt="course" />
         </div>
       </div>
     );

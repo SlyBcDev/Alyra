@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { CannassonRun, web3 } from "../config";
 import "bootstrap/dist/css/bootstrap.css";
+import Attente from "./Attente";
+import Cannasson001 from "../img/Cannasson001.jpg";
 
 class FicheCannasson extends Component {
   UNSAFE_componentWillMount() {
@@ -11,7 +13,9 @@ class FicheCannasson extends Component {
   async loadWalletData() {
     let accounts = await web3.eth.getAccounts();
     let myAccount = accounts[0];
-    this.setState({ proprio: myAccount });
+    let blockNumber = await web3.eth.getBlockNumber();
+
+    this.setState({ proprio: myAccount, blockNumber });
   }
 
   async loadCannassonData() {
@@ -100,7 +104,11 @@ class FicheCannasson extends Component {
       proprio: "",
       isShow: true,
       enchereValue: 0,
-      checkbox: false
+      checkbox: false,
+      concurrent: 0,
+      winner: 0,
+      loading: false,
+      blockNumber: 0
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -115,12 +123,24 @@ class FicheCannasson extends Component {
         from: this.state.proprio,
         value: web3.utils.toWei(value, "finney")
       },
-      function(error, transactionhash) {
-        if (error) {
-          alert(error);
-        } else {
-          alert("Entrainement reussi pensez à rafraichir " + transactionhash);
-        }
+      () => {
+        this.props.CallBackLoading();
+        CannassonRun.events.allEvents(
+          {
+            fromBlock: this.state.blockNumber
+          },
+          (err, event) => {
+            if (!err) {
+              let levelUp = parseInt(event.returnValues[0]);
+
+              alert(`FELICITATION !!! \n
+              Votre Cannasson a gagné ${levelUp} point(s)!
+              `);
+              this.props.CallBackLoading();
+              window.location.reload();
+            }
+          }
+        );
       }
     );
   };
@@ -135,12 +155,23 @@ class FicheCannasson extends Component {
         from: this.state.proprio,
         value: web3.utils.toWei(value, "finney")
       },
-      function(error, transactionhash) {
-        if (error) {
-          alert(error);
-        } else {
-          alert("Dopage reussi pensez à rafraichir " + transactionhash);
-        }
+      () => {
+        this.props.CallBackLoading();
+        CannassonRun.events.allEvents(
+          {
+            fromBlock: this.state.blockNumber
+          },
+          (err, event) => {
+            if (!err) {
+              let levelUp = parseInt(event.returnValues[0]);
+              alert(`FELICITATION !!! \n
+              Votre Cannasson a gagné ${levelUp} point(s)!
+              `);
+              this.props.CallBackLoading();
+              window.location.reload();
+            }
+          }
+        );
       }
     );
   };
@@ -165,14 +196,21 @@ class FicheCannasson extends Component {
   courrirUneCourse = async () => {
     await CannassonRun.methods
       .faireCourseGratuite(this.state.id)
-      .send({ from: this.state.proprio }, function(error, transactionhash) {
-        if (error) {
-          alert(error);
-        } else {
-          alert(
-            "En attente de résultat, Pensez à rafraichir " + transactionhash
-          );
-        }
+      .send({ from: this.state.proprio }, () => {
+        this.props.CallBackLoading();
+        CannassonRun.events.allEvents(
+          {
+            fromBlock: this.state.blockNumber
+          },
+          (err, event) => {
+            if (!err) {
+              let cannasson = parseInt(event.returnValues[0]);
+              let concurrent = parseInt(event.returnValues[1]);
+              let winner = parseInt(event.returnValues[2]);
+              this.props.CallBackLancerLaCourse(cannasson, concurrent, winner);
+            }
+          }
+        );
       });
   };
 
@@ -183,6 +221,7 @@ class FicheCannasson extends Component {
   mettreEnVente = async () => {
     let hollandais = this.state.checkbox;
     let montant = this.state.enchereValue;
+    montant = web3.utils.toWei(montant, "finney");
     let nom = this.state.nom;
     await CannassonRun.methods
       .proposerALaVente(this.state.id, hollandais, montant)
@@ -192,7 +231,7 @@ class FicheCannasson extends Component {
         } else {
           alert(
             nom +
-              "Vient d'être mis en enchère, Pensez à rafraichir " +
+              " Vient d'être mis en enchère, Pensez à rafraichir " +
               transactionhash
           );
         }
@@ -210,134 +249,144 @@ class FicheCannasson extends Component {
   render() {
     return (
       <div>
-        {this.state.isShow ? (
+        {this.state.loading ? (
+          <Attente />
+        ) : (
           <div>
-            <div className="col-sm m-2 ">
-              <div className="card bg-light" id="card">
-                <h5 className="mt-1">{this.state.nom}</h5>
-                <button
-                  className="m-auto btn btn-white border"
-                  onClick={this.changeName}
-                >
-                  Changer de nom
-                </button>
+            {this.state.isShow ? (
+              <div>
+                <div className="col-sm m-2 ">
+                  <div className="card bg-light" id="card">
+                    <h5 className="mt-1">{this.state.nom}</h5>
+                    <button
+                      className="my-1 mx-2 btn btn-white border"
+                      onClick={this.changeName}
+                    >
+                      Changer de nom
+                    </button>
 
-                <img
-                  src="http://www.photos-nature-passion.fr/images/photo-de-cheval-drole_4.jpg"
-                  alt="Cannasson"
-                  className="card-img-top mx-auto display-block"
-                  style={{
-                    width: 150,
-                    alignItems: "center"
-                  }}
-                />
-                <p className="card-text">
-                  Famille : {this.state.famille} <br />
-                  Categorie : {this.state.categorie} <br />
-                  sexe : {this.state.sexe} <br />
-                  level : {this.state.level} <br />
-                  nombre de course : {this.state.nbreDeCourse} <br />
-                  nombre de victoire : {this.state.nbreDeVictoire} <br />
-                  nombre d'entrainement : {this.state.nbreEntrainement} <br />
-                  popularité : {this.state.popularite} <br />
-                  nombre de dopage avéré : {this.state.nbreDopageAvere} <br />
-                </p>
-                <div className="card-body">
-                  <div className="btn-group-vertical">
-                    <button
-                      className="btn-block btn-primary"
-                      onClick={this.sEntrainer}
-                    >
-                      S'entrainer
-                    </button>
-                    <button
-                      className="btn-block btn-danger"
-                      onClick={this.doper}
-                    >
-                      Doper votre Cannasson.
-                    </button>
-                    <button
-                      className="btn-block btn-secondary"
-                      onClick={this.courrirUneCourse}
-                    >
-                      Faire une course
-                    </button>
-                    <button
-                      className="btn-block btn-info"
-                      onClick={this.isShowChange}
-                    >
-                      Mettre en vente
-                    </button>
+                    <img
+                      src={Cannasson001}
+                      alt="Cannasson"
+                      className="card-img-top mx-auto display-block"
+                      style={{
+                        width: 150,
+                        alignItems: "center"
+                      }}
+                    />
+                    <p className="card-text">
+                      Famille : {this.state.famille} <br />
+                      Categorie : {this.state.categorie} <br />
+                      sexe : {this.state.sexe} <br />
+                      level : {this.state.level} <br />
+                      nombre de course : {this.state.nbreDeCourse} <br />
+                      nombre de victoire : {this.state.nbreDeVictoire} <br />
+                      nombre d'entrainement : {this.state.nbreEntrainement}{" "}
+                      <br />
+                      popularité : {this.state.popularite} <br />
+                      nombre de dopage avéré : {this.state.nbreDopageAvere}{" "}
+                      <br />
+                    </p>
+                    <div className="card-body">
+                      <div className="btn-group-vertical">
+                        <button
+                          className="btn-block btn-primary"
+                          onClick={this.sEntrainer}
+                        >
+                          S'entrainer
+                        </button>
+                        <button
+                          className="btn-block btn-danger"
+                          onClick={this.doper}
+                        >
+                          Doper votre Cannasson.
+                        </button>
+                        <button
+                          className="btn-block btn-secondary"
+                          onClick={this.courrirUneCourse}
+                        >
+                          Faire une course
+                        </button>
+                        <button
+                          className="btn-block btn-info"
+                          onClick={this.isShowChange}
+                        >
+                          Mettre en vente
+                        </button>
+                        <button
+                          className="btn-block btn-warning"
+                          onClick={this.gestation}
+                        >
+                          Rendre disponible pour Gestation
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="col-sm m-2">
+                  <button
+                    className="btn-block btn-danger"
+                    onClick={this.isShowChange}
+                  >
+                    Annuler
+                  </button>
+                  <div className="card-body">
+                    <ul className="list-group list-group-flush">
+                      <li className="list-group-item">
+                        Nom : {this.state.nom}{" "}
+                      </li>
+                      <li className="list-group-item">
+                        Level : {this.state.level}
+                      </li>
+                      <li className="list-group-item">
+                        Nombre de Victoire(s) : {this.state.nbreDeVictoire}
+                      </li>
+                      <li className="list-group-item">
+                        Popularité : {this.state.popularite}
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="card-body alert alert-dark">
+                    <ul className="list-group list-group-flush ">
+                      <li className="list-group-item"> Mettre en enchère</li>
+                      <li className="list-group-item">
+                        Prix de départ
+                        <input
+                          name="enchereValue"
+                          type="number"
+                          className="ml-1"
+                          value={this.state.enchereValue}
+                          onChange={this.handleChange}
+                        ></input>
+                        Finney
+                      </li>
+                      <li className="list-group-item">
+                        <input
+                          name="checkbox"
+                          type="checkbox"
+                          value={this.state.checkbox}
+                          onChange={this.toggleChange}
+                        ></input>
+                        Enchère Hollandaise ?
+                      </li>
+                    </ul>
+                    <p>
+                      ATTENTION: Votre cannasson ne sera plus dispo pour la
+                      course durant la pèriode d'enchère.
+                    </p>
                     <button
                       className="btn-block btn-warning"
-                      onClick={this.gestation}
+                      onClick={this.mettreEnVente}
                     >
-                      Rendre disponible pour Gestation
+                      Soumettre
                     </button>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <div className="col-sm m-2">
-              <button
-                className="btn-block btn-danger"
-                onClick={this.isShowChange}
-              >
-                Annuler
-              </button>
-              <div className="card-body">
-                <ul className="list-group list-group-flush">
-                  <li className="list-group-item">Nom : {this.state.nom} </li>
-                  <li className="list-group-item">
-                    Level : {this.state.level}
-                  </li>
-                  <li className="list-group-item">
-                    Nombre de Victoire(s) : {this.state.nbreDeVictoire}
-                  </li>
-                  <li className="list-group-item">
-                    Popularité : {this.state.popularite}
-                  </li>
-                </ul>
-              </div>
-              <div className="card-body alert alert-dark">
-                <ul className="list-group list-group-flush ">
-                  <li className="list-group-item"> Mettre en enchère</li>
-                  <li className="list-group-item">
-                    Prix de départ
-                    <input
-                      name="enchereValue"
-                      type="number"
-                      className="ml-1"
-                      value={this.state.enchereValue}
-                      onChange={this.handleChange}
-                    ></input>
-                    Finney
-                  </li>
-                  <li className="list-group-item">
-                    <input
-                      name="checkbox"
-                      type="checkbox"
-                      value={this.state.checkbox}
-                      onChange={this.toggleChange}
-                    ></input>
-                    Enchère Hollandaise ?
-                  </li>
-                </ul>
-                <p>
-                  ATTENTION: Votre cannasson ne sera plus dispo pour la course
-                  durant la pèriode d'enchère.
-                </p>
-                <button
-                  className="btn-block btn-warning"
-                  onClick={this.mettreEnVente}
-                >
-                  Soumettre
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         )}
       </div>
