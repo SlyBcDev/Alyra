@@ -1,8 +1,8 @@
 import Web3 from "web3";
 
-const CONTRACT_ADDRESS = "0xbef6fe0748d6f9ef0463823b1cd4743d05f98a31"; // Sur Kovan
+const CONTRACT_ADDRESS = "0x564a69974fc0a67702a427508b3db5d53153de01"; // Sur Kovan
 
-const CONTRACT_ABI =[
+const CONTRACT_ABI = [
 	{
 		"constant": false,
 		"inputs": [

@@ -11,6 +11,7 @@ import DispoPourGestation from "./Component/dispoPourGestation";
 import Course from "./Component/Course";
 import Attente from "./Component/Attente";
 import MesAttentes from "./Component/MesAttentes";
+import Compteur from "./Component/Compteur";
 
 class App extends Component {
   UNSAFE_componentWillMount() {
@@ -22,7 +23,19 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts();
     const myAccount = accounts[0];
     let blockNumber = await web3.eth.getBlockNumber();
-    this.setState({ account: myAccount, blockNumber });
+    let resteCourseGratuite = await CannassonRun.methods
+      .afficherNbreCourseGratuiteRestante()
+      .call({ from: myAccount });
+    let dateProchaineCourseGratuite = await CannassonRun.methods
+      .afficherDateProchaineCourseGratuite()
+      .call({ from: myAccount });
+    this.setState({
+      account: myAccount,
+      blockNumber,
+      resteCourseGratuite,
+      dateProchaineCourseGratuite
+    });
+
     const nbreCannasson = await CannassonRun.methods
       .combienDeCannasson()
       .call();
@@ -67,6 +80,8 @@ class App extends Component {
     super(props);
     this.state = {
       account: "",
+      resteCourseGratuite: 0,
+      dateProchaineCourseGratuite: 0,
       nbreCannasson: 0,
       monEcurie: [],
       loading: false,
@@ -196,7 +211,17 @@ class App extends Component {
                 <Attente />
               ) : (
                 <div>
-                  <Header address={this.state.account} />
+                  <div className="row bg-light m-3">
+                    <Compteur
+                      className="col-2"
+                      nombre={this.state.resteCourseGratuite}
+                      date={this.state.dateProchaineCourseGratuite}
+                    />
+                    <div className="col-10">
+                      <Header address={this.state.account} />
+                    </div>
+                  </div>
+
                   <div className="bg-secondary m-3 p-2">
                     {this.state.placeDeMarche ? (
                       <h3 className="text-white" onClick={this.placeDeMarche}>
@@ -215,7 +240,13 @@ class App extends Component {
                         <h1>Cannasson en vente:</h1>
                         <div className="row">
                           {this.state.cannassonsEnVente.map(id => {
-                            return <InfosVente key={id} id={id} />;
+                            return (
+                              <InfosVente
+                                key={id}
+                                id={id}
+                                CallBackLoading={this.CallBackLoading}
+                              />
+                            );
                           })}
                         </div>
                       </div>
@@ -223,12 +254,18 @@ class App extends Component {
                         <h1>Cannasson prêt à enfanter:</h1>
                         <div className="row">
                           {this.state.dispoPourGestation.map(id => {
-                            return <DispoPourGestation key={id} id={id} />;
+                            return (
+                              <DispoPourGestation
+                                key={id}
+                                id={id}
+                                address={this.state.account}
+                              />
+                            );
                           })}
                         </div>
                       </div>
                       <div>
-                        <h1>Mes offres en attente:</h1>
+                        <h1>Mes ventes en attente:</h1>
                         {this.state.peutEtreRembourse ? (
                           <div>
                             <div className="card bg-warning">
@@ -265,6 +302,9 @@ class App extends Component {
                                     this.CallBackLancerLaCourse
                                   }
                                   CallBackLoading={this.CallBackLoading}
+                                  nombreCourseGratuite={
+                                    this.state.resteCourseGratuite
+                                  }
                                 />
                               );
                             })}
