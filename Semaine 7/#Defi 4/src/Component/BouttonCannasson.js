@@ -9,18 +9,12 @@ class BouttonCannasson extends Component {
 
   loadCannassonData = async () => {
     let id = this.props.id;
-    const nom = await CannassonRun.method.nomDuCannasson(id).call();
-    const sexe = await CannassonRun.methods.sexeDuCannasson(id).call();
-    const level = await CannassonRun.methods.levelDuCannsson(id).call();
-    const popularite = await CannassonRun.methods
-      .populariteDuCannasson(id)
-      .call();
+    const nom = await CannassonRun.methods.nomDuCannasson(id).call();
+    const level = await CannassonRun.methods.levelDuCannasson(id).call();
     this.setState({
       id,
       nom,
-      sexe,
-      level,
-      popularite
+      level
     });
   };
 
@@ -29,13 +23,14 @@ class BouttonCannasson extends Component {
     this.state = {
       id: 0,
       nom: "",
-      sexe: "",
-      level: 0,
-      popularite: 0
+      level: 0
     };
   }
 
-  CallBackReturn = () => {};
+  CallBackReturn = () => {
+    let parent2 = this.state.id;
+    this.props.callBackGestation(parent2);
+  };
 
   render() {
     return (

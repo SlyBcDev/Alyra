@@ -58,7 +58,12 @@ class MesAttentes extends Component {
     let jour = Math.floor(delai / 86400);
     let heure = Math.floor((delai % 86400) / 3600);
     let min = Math.floor(((delai % 86400) % 3600) / 60);
-    let stringDate = `${jour}Jour(s),${heure}H ${min}min `;
+    let stringDate;
+    if (jour <= 0 && heure <= 0 && min <= 0) {
+      stringDate = "Enchère terminée";
+    } else {
+      stringDate = `${jour}Jour(s),${heure}H ${min}min `;
+    }
 
     this.setState({
       id: id,
@@ -107,51 +112,49 @@ class MesAttentes extends Component {
   }
 
   demanderPaiement = async () => {
-    await CannassonRun.methods.reclamerPaiement(this.state.id).call();
-  };
-
-  faireUneOffre = async () => {
-    let value = prompt("Combien proposez vous ? (Montant en Finney)");
-    await CannassonRun.methods.proposerOffre(this.state.enchereId).send(
-      {
-        from: this.state.myAccount,
-        value: web3.utils.toWei(value, "finney")
-      },
-      function(error, transactionhash) {
-        if (error) {
-          alert(error);
-        } else {
-          alert(
-            "Transaction envoyée : " +
-              transactionhash +
-              <br /> +
-              "Pensez à rafrachir la page"
-          );
-        }
-      }
-    );
+    await CannassonRun.methods
+      .reclamerPaiement(this.state.id)
+      .call({ from: this.state.myAccount });
   };
 
   render() {
     return (
       <div>
         {this.state.proprio === this.state.myAccount ? (
-          <div />
-        ) : (
           <div className="col-sm m-3">
             <div className="card bg-light">
-              <h3 className="bg-info"> Ma Vente </h3>
+              {this.state.myAccount === this.state.meilleurOffrant ? (
+                <h3 className="bg-danger"> Pas d'offre pour:</h3>
+              ) : this.state.stringDate === "Enchère terminée" ? (
+                <h3 className="bg-success"> Vente reussi pour : </h3>
+              ) : (
+                <h3 className="bg-warning"> J'ai une offre pour: </h3>
+              )}
+
               <div className="card-body">
                 <div>
-                  <h5 className="card-title">{this.state.nom}</h5>
+                  <h4 className="card-title">{this.state.nom}</h4>
                   <p className="card-text">
                     Famille : {this.state.famille} <br />
                     Categorie : {this.state.categorie} <br />
                     sexe : {this.state.sexe} <br />
-                    level : {this.state.level} <br />
+                    <strong>level : {this.state.level}</strong> <br />
                     popularité : {this.state.popularite} <br />
                   </p>
-                  {this.state.myAccount !== this.state.meilleurOffrant ? (
+                  {this.state.myAccount === this.state.meilleurOffrant ? (
+                    <div>
+                      <h6 className="bg-secondary text-white">
+                        Je demande {this.state.meilleurOffre} Finney
+                      </h6>
+                    </div>
+                  ) : this.state.stringDate === "Enchère terminée" ? (
+                    <button
+                      className="btn-success"
+                      onClick={this.demanderPaiement}
+                    >
+                      Réclamer le paiement
+                    </button>
+                  ) : (
                     <div>
                       <h6 className="bg-secondary text-white">
                         Meilleur Offre: {this.state.meilleurOffre} Finney
@@ -160,14 +163,10 @@ class MesAttentes extends Component {
                         Par: {this.state.meilleurOffrant}
                       </h6>
                     </div>
-                  ) : (
-                    <div>
-                      <h6>En attente d'offre</h6>
-                    </div>
                   )}
 
                   <p>
-                    Fin de l'offre dans:
+                    Fin de la vente dans:
                     <br />
                     {this.state.stringDate}
                   </p>
@@ -175,6 +174,8 @@ class MesAttentes extends Component {
               </div>
             </div>
           </div>
+        ) : (
+          <div />
         )}
       </div>
     );

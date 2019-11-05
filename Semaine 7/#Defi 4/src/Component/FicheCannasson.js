@@ -19,6 +19,7 @@ class FicheCannasson extends Component {
   }
 
   async loadCannassonData() {
+    let nombreCourseGratuite = this.props.nombreCourseGratuite;
     let id = this.props.id;
     let nom = await CannassonRun.methods.nomDuCannasson(id).call();
     let famille = await CannassonRun.methods.fammileDuCannasson(id).call();
@@ -55,7 +56,8 @@ class FicheCannasson extends Component {
       nbreEntrainement,
       popularite,
       nbreDopageAvere,
-      attenteAvantProchaineCourse
+      attenteAvantProchaineCourse,
+      nombreCourseGratuite
     });
   }
 
@@ -108,7 +110,8 @@ class FicheCannasson extends Component {
       concurrent: 0,
       winner: 0,
       loading: false,
-      blockNumber: 0
+      blockNumber: 0,
+      nombreCourseGratuite: 0
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -194,24 +197,56 @@ class FicheCannasson extends Component {
   };
 
   courrirUneCourse = async () => {
-    await CannassonRun.methods
-      .faireCourseGratuite(this.state.id)
-      .send({ from: this.state.proprio }, () => {
-        this.props.CallBackLoading();
-        CannassonRun.events.allEvents(
-          {
-            fromBlock: this.state.blockNumber
-          },
-          (err, event) => {
-            if (!err) {
-              let cannasson = parseInt(event.returnValues[0]);
-              let concurrent = parseInt(event.returnValues[1]);
-              let winner = parseInt(event.returnValues[2]);
-              this.props.CallBackLancerLaCourse(cannasson, concurrent, winner);
+    if (this.state.nombreCourseGratuite > 0) {
+      await CannassonRun.methods
+        .faireCourseGratuite(this.state.id)
+        .send({ from: this.state.proprio }, () => {
+          this.props.CallBackLoading();
+          CannassonRun.events.allEvents(
+            {
+              fromBlock: this.state.blockNumber
+            },
+            (err, event) => {
+              if (!err) {
+                let cannasson = parseInt(event.returnValues[0]);
+                let concurrent = parseInt(event.returnValues[1]);
+                let winner = parseInt(event.returnValues[2]);
+                this.props.CallBackLancerLaCourse(
+                  cannasson,
+                  concurrent,
+                  winner
+                );
+              }
             }
+          );
+        });
+    } else {
+      await CannassonRun.methods
+        .faireCoursePayante(this.state.id)
+        .send(
+          { from: this.state.proprio, value: web3.utils.toWei("1", "finney") },
+          () => {
+            this.props.CallBackLoading();
+            CannassonRun.events.allEvents(
+              {
+                fromBlock: this.state.blockNumber
+              },
+              (err, event) => {
+                if (!err) {
+                  let cannasson = parseInt(event.returnValues[0]);
+                  let concurrent = parseInt(event.returnValues[1]);
+                  let winner = parseInt(event.returnValues[2]);
+                  this.props.CallBackLancerLaCourse(
+                    cannasson,
+                    concurrent,
+                    winner
+                  );
+                }
+              }
+            );
           }
         );
-      });
+    }
   };
 
   isShowChange = () => {
