@@ -11,8 +11,9 @@ contract Cannasson is ERC721Simple{
     
     event Transfer(address indexed _from, address indexed _to, uint256 _tokenId);
     event newCannasson(uint id,string nom,string famille,string categorie);
-    event participantCourse(uint _participant1, uint _participant2);
     event resultatCourse(uint _tokenId, uint _concurentId, uint _winnerId);
+    event resultatEntrainement(uint _levelUp);
+    event resultatControleANtidopage(string _message);
     
     
     //------------------------------------------------------------------------------------------------------------------------//
@@ -48,6 +49,16 @@ contract Cannasson is ERC721Simple{
     modifier isAdminOfContract{
         require(isAdmin[msg.sender]==true);
         _;
+    }
+    
+    //Nom du token
+    function name() public pure returns (string memory _symbol){
+        return "Cannasson_Run";
+    }
+    
+    //Symbol du token
+    function symbol() public pure returns (string memory _symbol){
+        return "CNSR";
     }
     
     // Connaitre le nombre de cannasson d'une adresse.
@@ -233,8 +244,9 @@ contract Cannasson is ERC721Simple{
     }
     
     // Un cannasson de course... Ca s'entraine !!!
-    function entrainerCannasson(uint _tokenId) public payable isOwner(_tokenId) returns(uint _newLevel){
+    function entrainerCannasson(uint _tokenId) public payable isOwner(_tokenId) {
         require (msg.value >= 1 finney);
+        uint _oldLevel = level[_tokenId];
         if (msg.value >= 1 finney && msg.value < 2 finney){
             level[_tokenId]= level[_tokenId].add(uint16((uint(blockhash(block.number-1))%3)).add(1)); // Un entrainement payé 0.001 à 0.002 peut donner de 1 à 3 pts de level.
         } if (msg.value >= 2 finney && msg.value < 3 finney){
@@ -243,14 +255,17 @@ contract Cannasson is ERC721Simple{
             level[_tokenId]= level[_tokenId].add(uint16((uint(blockhash(block.number-1))%10)).add(1)); // Un entrainement payé plus de 0.003 peut donner 1 à 10 pts de level.
         } 
         nbreEntrainement[_tokenId] = nbreEntrainement[_tokenId].add(1);
-        _newLevel = level[_tokenId];
-        return _newLevel;
+        
+
+        uint _deltaLevel = level[_tokenId].sub(_oldLevel);
+        emit resultatEntrainement(_deltaLevel);
     }
     
     // Mais ça peut aussi se doper ^^.
-    function doperCannasson(uint _tokenId) public payable isOwner(_tokenId) returns (uint _newLevel){
+    function doperCannasson(uint _tokenId) public payable isOwner(_tokenId){
         require(estDope[_tokenId]==false, "Hehe, vous ne pouvez pas doper 2 fois votre cannasson en 24h.");
         require (msg.value >= 5 finney);
+        uint _oldLevel = level[_tokenId];
         if (msg.value >= 5 finney && msg.value < 10 finney){
             level[_tokenId] = level[_tokenId].add(uint16((uint(blockhash(block.number-1))%10)).add(1));// Un entrainement payé 0.005 à 0.01 peut donner de 1 à 10 pts de level.
             estDope[_tokenId] ==true;
@@ -264,8 +279,9 @@ contract Cannasson is ERC721Simple{
             estDope[_tokenId] ==true;
             lastDopageDate[_tokenId]=now;
         } 
-        _newLevel = level[_tokenId];
-        return _newLevel;
+ 
+         uint _deltaLevel = level[_tokenId].sub(_oldLevel);
+        emit resultatEntrainement(_deltaLevel);
     }
     
     // Et ça peut aussi servir de monnaie d'échange
@@ -287,9 +303,9 @@ contract Cannasson is ERC721Simple{
     }
     
     // controle antidopage
-    function demanderControleAntiDopage(uint _tokenId) public payable returns(string memory _message) {
+    function demanderControleAntiDopage(uint _tokenId) public payable{
         require(msg.value == 0.001 ether,"Attends ça coute du fric un controle anti dopage.");
-        _message = "Le controle anti dopage n'a rien décelé d'anormal.";
+        string memory _message = "Le controle anti dopage n'a rien décelé d'anormal.";
             if (lastDopageDate[_tokenId].add(1 days) < now){
             estDope[_tokenId] = false;
             }
@@ -309,7 +325,7 @@ contract Cannasson is ERC721Simple{
                 }
             }
         }
-        return _message;
+        emit resultatControleANtidopage(_message);
     }
     
     //------------------------------------------------------------------------------------------------------------------------//
@@ -401,41 +417,51 @@ contract Cannasson is ERC721Simple{
        idEnchere = idEnchere.add(1);
    }
    
-   function _majOffreHollandaise(uint _enchereId) private returns(uint){
-       require(encheres[_enchereId].enchereHollandaise==true);
-       require(estActive[_enchereId] ==true);
-       uint _tempsPasse = now.sub(encheres[_enchereId].departDeLaVente); // On calcule le temps passé depuis la mise en enchere de l'objet.
-       uint _remise = encheres[_enchereId].meilleureOffre.div(1000); // On calcule 0,1% du montant de l'enchère.
-       uint _uneHeure = 3600000; // Une heure = 3 600 000 millisecondes
-       uint _remiseGlobale = (_tempsPasse.div(_uneHeure)).mul(_remise);
-       uint _newPrice = encheres[_enchereId].meilleureOffre.sub(_remiseGlobale); // on retire (0.1% X le nombre d'heures passés) depuis le debut l'enchere.
-       encheres[_enchereId].meilleureOffre = _newPrice; // on met à jour le nouveau prix.
-       return _newPrice;
+   
+   function proposerOffreHollandaise(uint _enchereId) public payable{
+    require(estActive[_enchereId]==true,"Cet objet n'est pas/plus en vente!");
+    require(now<encheres[_enchereId].finEnchere,"La vente pour cet objet est terminée"); //On verifie si le bloc actuel n'est pas supperieur au bloc de fin d'enchere
+    require(encheres[_enchereId].enchereHollandaise==true);
+    require((msg.value) >= encheres[_enchereId].meilleureOffre);
+    
+    // Calcul du montant Hollandais.
+    uint _tempsPasse = now.sub(encheres[_enchereId].departDeLaVente); // On calcule le temps passé depuis la mise en enchere de l'objet.
+    uint _remise = encheres[_enchereId].meilleureOffre.div(200); // On calcule 0,5% du montant de l'enchère.
+    uint _remiseGlobale = (_tempsPasse.div(1 hours)).mul(_remise);
+    uint _newPrice = encheres[_enchereId].meilleureOffre.sub(_remiseGlobale); // on retire (0.5% X le nombre d'heures passés) depuis le debut l'enchere.
+
+    uint aRembourser = (msg.value).sub(_remiseGlobale);
+    if(aRembourser>0){
+    peutEtreRembourse[msg.sender]=true;      // Si trop perçu, l'acheteur pourra etre remboursé.
+    montantARembourser[msg.sender]=aRembourser;
+    }
+
+    _transfererCannasson(encheres[_enchereId].idCannasson,msg.sender,address(this));
+    estEnVente[encheres[_enchereId].idCannasson] = false; // On stop l'enchere
+    estActive[_enchereId]=false;
+    address vendeur = encheres[_enchereId].vendeur;
+    peutEtreRembourse[vendeur]=true;
+    montantARembourser[vendeur]=_newPrice;
+    argentBloque= argentBloque.add(_newPrice);
+
+
    }
    
    function proposerOffre(uint _enchereId) payable public{
     require(estActive[_enchereId]==true,"Cet objet n'est pas/plus en vente!");
     require(now<encheres[_enchereId].finEnchere,"La vente pour cet objet est terminée"); //On verifie si le bloc actuel n'est pas supperieur au bloc de fin d'enchere
-
-       if(encheres[_enchereId].enchereHollandaise==true){ // Si c'est une enchere Hollandaise
-           if(msg.value >= _majOffreHollandaise(_enchereId)){ // Si l'offre est suffisante
-               _transfererCannasson(encheres[_enchereId].idCannasson,msg.sender,address(this)); // On transfert directement le token
-               estEnVente[encheres[_enchereId].idCannasson] = false; // On stop l'enchere
-               argentBloque = argentBloque.add(msg.value); // on mets à jour le montant que ne peut pas récupérer le proprietaire du contrat
-               estActive[_enchereId]=false;
-           }
-       }
-       
        // Si ce n'est pas une enchere hollandaise.
-       else if(msg.value > encheres[_enchereId].meilleureOffre){ // On verifie que l'offre est suppèrieur à la précédente 
-           if(encheres[_enchereId].meilleurAcheteur !=  encheres[_enchereId].vendeur){ // Si il y'a déjà eu une offre
-               peutEtreRembourse[encheres[_enchereId].meilleurAcheteur]=true; // l'address du précédent enchereur peut prétendre à un remboursement
-               montantARembourser[encheres[_enchereId].meilleurAcheteur]=encheres[_enchereId].meilleureOffre; // on fixe le montant du remboursement 
-           }
+    require (msg.value > encheres[_enchereId].meilleureOffre);
+  
+   // On verifie que l'offre est suppèrieur à la précédente 
+    if(encheres[_enchereId].meilleurAcheteur !=  encheres[_enchereId].vendeur){ // Si il y'a déjà eu une offre
+        peutEtreRembourse[encheres[_enchereId].meilleurAcheteur]=true; // l'address du précédent enchereur peut prétendre à un remboursement
+        montantARembourser[encheres[_enchereId].meilleurAcheteur]=encheres[_enchereId].meilleureOffre; // on fixe le montant du remboursement 
+        }
            encheres[_enchereId].meilleurAcheteur=msg.sender; // on fixe le nouvel enchereur et la nouyvelle offre
            encheres[_enchereId].meilleureOffre=msg.value;
            argentBloque = argentBloque.add(msg.value); // on mets à jour le montant que ne peut pas récupérer le proprietaire du contrat
-       }
+       
    }
    
    function demanderRemboursement() public{
@@ -448,19 +474,29 @@ contract Cannasson is ERC721Simple{
    }
    
    function reclamerPaiement(uint _tokenId) public{
-       require(encheres[_tokenId].vendeur == msg.sender);
-       require(encheres[_tokenId].meilleurAcheteur !=  encheres[_tokenId].vendeur);
-       msg.sender.transfer(encheres[_tokenId].meilleureOffre);
-       argentBloque = argentBloque.sub(encheres[_tokenId].meilleureOffre);
+       for(uint i=0;i<= encheres.length;i++){
+           if( encheres[i].idCannasson == _tokenId
+           && encheres[i].vendeur == msg.sender
+           && encheres[i].meilleurAcheteur !=  encheres[i].vendeur 
+           && encheres[i].finEnchere < now){
+               
+            msg.sender.transfer(encheres[i].meilleureOffre);
+            argentBloque = argentBloque.sub(encheres[i].meilleureOffre);
+           }
+       }
    }
    
    function recupererCannasson(uint _tokenId) public {
-       require( msg.sender == encheres[_tokenId].meilleurAcheteur,"Vous n'etes pas le plus offrant, si vous avez fait une offre, vous pouvez réclamer un remboursement");
-       require(now>encheres[_tokenId].finEnchere,"L'enchere n'est pas encore terminée, revenez plus tard");
-       _transfererCannasson(_tokenId,encheres[_tokenId].meilleurAcheteur,address(this)); // S'il n'y a pas eu d'enchere, l'ancien propriétaire peut récupérer son objet.
+       for(uint i=0;i<=encheres.length;i++){
+           if( encheres[i].idCannasson ==_tokenId
+           && msg.sender == encheres[i].meilleurAcheteur 
+           && now>encheres[i].finEnchere){
+               _transfererCannasson(_tokenId,encheres[i].meilleurAcheteur,address(this)); // S'il n'y a pas eu d'enchere, l'ancien propriétaire peut récupérer son objet.
+           }
+       }
    }
    
-   function majOffreActive() private { // permet de desactiver les offres "perimées", cette fonction sera appelé à chaque  course, pour eviter d'avoir a le faire manuellement
+   function majOffreActive() public { // permet de desactiver les offres "perimées", cette fonction sera appelé à chaque  course, pour eviter d'avoir a le faire manuellement
        for(uint i=0;i<=idEnchere;i++){
            if(estActive[i]==true){
                if(encheres[i].finEnchere<now){
@@ -494,14 +530,14 @@ contract Cannasson is ERC721Simple{
     function faireCourseGratuite(uint _tokenId) public isOwner(_tokenId){
         // On verifie qu'il a attendu 4h et que son reste de course gratuite soit à 0 pour lui en donner une nouvelle.
         if(dateProchaineCourseGratuite[msg.sender]< now && resteCourseGratuite[msg.sender]==0){ 
-            resteCourseGratuite[msg.sender].add(1);
+            resteCourseGratuite[msg.sender] = resteCourseGratuite[msg.sender].add(1);
         }
         // Si il a en stock une course gratuite, il peut l'utiliser
         if(resteCourseGratuite[msg.sender]>0){
         _faireUneCourse(_tokenId);
         // 4h plus tard il pourra participer à la suivante.
         dateProchaineCourseGratuite[msg.sender]= now.add(tempsDAttente);
-        resteCourseGratuite[msg.sender].sub(1);
+        resteCourseGratuite[msg.sender] = resteCourseGratuite[msg.sender].sub(1);
         }
     }
     
@@ -525,8 +561,7 @@ contract Cannasson is ERC721Simple{
                 _concurrent = _concurrent.sub(1);
             }else {_concurrent = _concurrent.add(1);}
         }
-        
-        emit participantCourse(_concurrent,_tokenId);
+
         
         // Simulation de la course. on utilise le level , la popularité, le nombre de course, le nombre de victoire , nbre d'entrainement pour générer un chiffre, et on soustrait le nbre de dopage averait X2 ,celui qui a le plus de chance de gagner.
         
@@ -539,17 +574,18 @@ contract Cannasson is ERC721Simple{
         // Désignation du vainqueur en tirant au sort un nombre entre 0 et 99.
         if(((uint(blockhash(block.number-1))) % 100)<= _maProbaDeWin){
             _winner = _tokenId; // Si notre proba est supperieur au nombre tiré au sort, on gagne.
-            level[_tokenId].add(1);
-            nbreDeCourse[_tokenId].add(1);  // On gagne 1 en level, victoire et nbre de course
-            nbreDeVictoire[_tokenId].add(1);
-            nbreDeCourse[_concurrent].add(1); // on ajoute 1 course au concurent
+            level[_tokenId] = level[_tokenId].add(1);
+            nbreDeCourse[_tokenId] = nbreDeCourse[_tokenId].add(1);  // On gagne 1 en level, victoire et nbre de course
+            nbreDeVictoire[_tokenId] = nbreDeVictoire[_tokenId].add(1);
+            nbreDeCourse[_concurrent] = nbreDeCourse[_concurrent].add(1); // on ajoute 1 course au concurent
+            popularite[_tokenId] = popularite[_tokenId].add(1);
             attenteAvantProchaineCourse[_tokenId] = now.add(tempsDAttente); // notre cannasson devra attendre 4h avant de pouvoir courrir de nouveau.
         } else {
             _winner = _concurrent;
-            level[_concurrent].add(1);
-            nbreDeCourse[_concurrent].add(1); // Il gagne 1 en level, victoire et nbre de course
-            nbreDeVictoire[_concurrent].add(1);
-            nbreDeCourse[_tokenId].add(1); // on ajoute une course à notre cannasson
+            level[_concurrent] = level[_concurrent].add(1);
+            nbreDeCourse[_concurrent] = nbreDeCourse[_concurrent].add(1); // Il gagne 1 en level, victoire et nbre de course
+            nbreDeVictoire[_concurrent] = nbreDeVictoire[_concurrent].add(1);
+            nbreDeCourse[_tokenId] = nbreDeCourse[_tokenId].add(1); // on ajoute une course à notre cannasson
             attenteAvantProchaineCourse[_tokenId]= now.add(tempsDAttente); // notre cannasson devra attendre 4h avant de pouvoir courrir de nouveau.
         }
         emit resultatCourse(_tokenId,_concurrent,_winner);
@@ -562,6 +598,7 @@ contract Cannasson is ERC721Simple{
     
     mapping(uint => bool) seProposePourGestation;
     mapping(uint => uint) tarifPourGestation;
+    mapping(uint => bool) vientDEnfanter;
     
     function estDispoPourGestation(uint _tokenId) public view returns(bool){
         return seProposePourGestation[_tokenId];
@@ -576,12 +613,17 @@ contract Cannasson is ERC721Simple{
         tarifPourGestation[_tokenId] = _demande;
     }
     
+    
     function payerPourGestation (uint _parent1,uint _parent2 ) public payable isOwner(_parent2){
         require(msg.value == tarifPourGestation[_parent1],"Pas le bon montant");
         require(sexe[_parent1] != sexe[_parent2]); // On verifie quand même que les 2 parents ne soient pas du même sexe hein ... 
         _gestation(_parent1,_parent2,msg.sender);
         seProposePourGestation[_parent1]= false;
-        argentBloque = argentBloque.sub(msg.value);
+        argentBloque = argentBloque.add(msg.value);
+        address _proprio = ownerOf(_parent1); // on utilise les functions de remboursement pour payer le proprio
+        peutEtreRembourse[_proprio] = true; 
+        montantARembourser[_proprio] = msg.value;
+       
     }
     
     function _gestation (uint _parent1, uint _parent2, address _adresseProprio) private {
