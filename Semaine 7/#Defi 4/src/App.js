@@ -237,7 +237,11 @@ class App extends Component {
                   {this.state.placeDeMarche ? (
                     <div>
                       <div>
-                        <h1>Cannasson en vente:</h1>
+                        {this.state.cannassonsEnVente.length > 0 ? (
+                          <h1>Cannasson en vente:</h1>
+                        ) : (
+                          <h1>Pas de Cannasson en vente actuellement</h1>
+                        )}
                         <div className="row">
                           {this.state.cannassonsEnVente.map(id => {
                             return (
@@ -251,7 +255,11 @@ class App extends Component {
                         </div>
                       </div>
                       <div>
-                        <h1>Cannasson prêt à enfanter:</h1>
+                        {this.state.dispoPourGestation.length > 0 ? (
+                          <h1>Cannasson prêt à enfanter:</h1>
+                        ) : (
+                          <div />
+                        )}
                         <div className="row">
                           {this.state.dispoPourGestation.map(id => {
                             return (

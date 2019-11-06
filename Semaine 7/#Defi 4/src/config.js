@@ -1,6 +1,6 @@
 import Web3 from "web3";
 
-const CONTRACT_ADDRESS = "0x564a69974fc0a67702a427508b3db5d53153de01"; // Sur Kovan
+const CONTRACT_ADDRESS = "0xdfb952da5bbeb9a3244dc4c891c557337f851c94"; // Sur Kovan
 
 const CONTRACT_ABI = [
 	{
@@ -98,6 +98,15 @@ const CONTRACT_ABI = [
 		"outputs": [],
 		"payable": true,
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "majOffreActive",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -253,6 +262,20 @@ const CONTRACT_ABI = [
 			}
 		],
 		"name": "proposerOffre",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_enchereId",
+				"type": "uint256"
+			}
+		],
+		"name": "proposerOffreHollandaise",
 		"outputs": [],
 		"payable": true,
 		"stateMutability": "payable",
@@ -983,7 +1006,6 @@ const CONTRACT_ABI = [
 		"type": "function"
 	}
 ]
-
 export const web3 = new Web3(Web3.givenProvider || "http://localhost:8545")
 export const CannassonRun = new web3.eth.Contract(
   CONTRACT_ABI,
