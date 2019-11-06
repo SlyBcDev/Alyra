@@ -323,33 +323,33 @@ class FicheCannasson extends Component {
                       <br />
                     </p>
                     <div className="card-body">
-                      <div className="btn-group-vertical">
+                      <div className="btn btn-group-vertical">
                         <button
-                          className="btn-block btn-primary"
+                          className="btn btn-block btn-primary"
                           onClick={this.sEntrainer}
                         >
                           S'entrainer
                         </button>
                         <button
-                          className="btn-block btn-danger"
+                          className="btn btn-block btn-danger"
                           onClick={this.doper}
                         >
                           Doper votre Cannasson.
                         </button>
                         <button
-                          className="btn-block btn-secondary"
+                          className="btn btn-block btn-secondary"
                           onClick={this.courrirUneCourse}
                         >
                           Faire une course
                         </button>
                         <button
-                          className="btn-block btn-info"
+                          className="btn btn-block btn-info"
                           onClick={this.isShowChange}
                         >
                           Mettre en vente
                         </button>
                         <button
-                          className="btn-block btn-warning"
+                          className="btn btn-block btn-warning"
                           onClick={this.gestation}
                         >
                           Rendre disponible pour Gestation
@@ -363,7 +363,7 @@ class FicheCannasson extends Component {
               <div>
                 <div className="col-sm m-2">
                   <button
-                    className="btn-block btn-danger"
+                    className="btn btn-block btn-danger"
                     onClick={this.isShowChange}
                   >
                     Annuler
@@ -413,7 +413,7 @@ class FicheCannasson extends Component {
                       course durant la pèriode d'enchère.
                     </p>
                     <button
-                      className="btn-block btn-warning"
+                      className="btn btn-block btn-warning"
                       onClick={this.mettreEnVente}
                     >
                       Soumettre

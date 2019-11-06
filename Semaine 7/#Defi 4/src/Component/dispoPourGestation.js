@@ -97,7 +97,7 @@ class DispoPourGestation extends Component {
                 </p>
                 <h6>Prix demandé: {this.state.tarif} Finney</h6>
                 <p>Choisir mon Cannasson :</p>
-                <div className="btn-group-vertical">
+                <div className="btn btn-group-vertical">
                   {this.state.mesCannassonsCompatibles.map(id => {
                     return (
                       <BouttonCannasson

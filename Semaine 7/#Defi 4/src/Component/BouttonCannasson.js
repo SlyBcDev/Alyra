@@ -35,8 +35,11 @@ class BouttonCannasson extends Component {
   render() {
     return (
       <div>
-        <button className="btn-info" onClick={this.CallBackReturn}>
-          {this.state.nom} level:{this.state.level}
+        <button
+          className="btn btn-block btn-info m-1"
+          onClick={this.CallBackReturn}
+        >
+          {this.state.nom} level : {this.state.level}
         </button>
       </div>
     );

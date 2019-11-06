@@ -135,7 +135,8 @@ class InfosVente extends Component {
 
   faireUneOffreHollandaise = async () => {
     let value = this.state.meilleurOffre;
-    await CannassonRun.methods.proposerOffre(this.state.enchereId).send(
+    let enchereId = parseInt(this.state.enchereId);
+    await CannassonRun.methods.proposerOffreHollandaise(enchereId).send(
       {
         from: this.state.myAccount,
         value: web3.utils.toWei(value, "finney")
@@ -222,7 +223,7 @@ class InfosVente extends Component {
 
                   {this.state.enchereHollandaise ? (
                     <button
-                      className="btn-primary"
+                      className="btn btn-primary"
                       onClick={this.faireUneOffreHollandaise}
                     >
                       Acheter
@@ -232,14 +233,14 @@ class InfosVente extends Component {
                   ) : this.state.meilleurOffrant === this.state.myAccount &&
                     this.state.stringDate === "Enchère terminée" ? (
                     <button
-                      className="btn-success"
+                      className="btn btn-success"
                       onClick={this.reclamerCannasson}
                     >
                       Réclamer mon nouveau Cannasson
                     </button>
                   ) : (
                     <button
-                      className="btn-primary"
+                      className="btn btn-primary"
                       onClick={this.faireUneOffre}
                     >
                       Faire une offre
